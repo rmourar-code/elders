@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#0a0704;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  ::-webkit-scrollbar{width:0;height:0;}
+  @keyframes floatUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes emberRise{0%{transform:translateY(0) scale(1);opacity:0}12%{opacity:.9}100%{transform:translateY(-170px) scale(.35);opacity:0}}
+  @keyframes snowFall{0%{transform:translateY(-30px) translateX(0);opacity:0}12%{opacity:.85}100%{transform:translateY(230px) translateX(24px);opacity:0}}
+  @keyframes wispFloat{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-16px);opacity:1}}
+  @keyframes dustDrift{0%{transform:translate(0,0);opacity:0}20%{opacity:.6}100%{transform:translate(30px,-40px);opacity:0}}
+  @keyframes idleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  @keyframes eyeGlow{0%,100%{opacity:.6}50%{opacity:1}}
+  @keyframes floatSpirit{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes enemyHurt{0%{filter:brightness(1)}18%{filter:brightness(2.6) saturate(3) hue-rotate(-18deg)}100%{filter:brightness(1)}}
+  @keyframes enemyShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-11px) rotate(-3deg)}32%{transform:translateX(9px) rotate(2deg)}50%{transform:translateX(-6px)}68%{transform:translateX(4px)}84%{transform:translateX(-2px)}}
+  @keyframes dissolveOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.35) translateY(-14px);filter:blur(7px)}}
+  @keyframes dmgFloat{0%{opacity:0;transform:translate(-50%,0) scale(.5)}22%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-58px) scale(.95)}}
+  @keyframes fireballFly{0%{left:16%;top:66%;opacity:0;transform:translate(-50%,-50%) scale(.4)}18%{opacity:1}100%{left:50%;top:36%;opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
+  @keyframes iceFly{0%{left:16%;top:66%;opacity:0;transform:translate(-50%,-50%) rotate(45deg) scale(.5)}20%{opacity:1}100%{left:50%;top:36%;opacity:0;transform:translate(-50%,-50%) rotate(45deg) scale(1.2)}}
+  @keyframes slashSweep{0%{opacity:0;transform:translate(-50%,-50%) rotate(-45deg) scaleX(.3)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(18deg) scaleX(1.5)}}
+  @keyframes boltFlash{0%{opacity:0}8%{opacity:1}22%{opacity:.2}30%{opacity:.9}100%{opacity:0}}
+  @keyframes flashBang{0%{opacity:0}12%{opacity:.8}100%{opacity:0}}
+  @keyframes heroLunge{0%{transform:translateX(0) translateY(0)}42%{transform:translateX(34px) translateY(-8px)}100%{transform:translateX(0) translateY(0)}}
+  @keyframes heroHurt{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}60%{transform:translateX(5px)}}
+  @keyframes screenShake{0%,100%{transform:translate(0,0)}18%{transform:translate(-6px,3px)}38%{transform:translate(5px,-3px)}58%{transform:translate(-4px,2px)}78%{transform:translate(3px,-2px)}}
+  @keyframes sparkUp{0%{opacity:0;transform:translate(-50%,0) scale(0)}30%{opacity:1;transform:translate(-50%,-8px) scale(1)}100%{opacity:0;transform:translate(-50%,-46px) scale(.3)}}
+  @keyframes titlePulse{0%,100%{text-shadow:0 2px 30px rgba(201,162,39,.35)}50%{text-shadow:0 2px 50px rgba(201,162,39,.62)}}
+  @keyframes wingBeat{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + var(--d))) translateY(-3px)}}
+  @keyframes shieldRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}30%{opacity:.95}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
+  @keyframes holyPillar{0%{opacity:0;transform:translateX(-50%) scaleY(.2)}25%{opacity:1}100%{opacity:0;transform:translateX(-50%) scaleY(1.1)}}
+  @keyframes drainBeam{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0a0704;display:flex;justify-content:center;align-items:stretch;font-family:'Spectral',Georgia,serif;">
+  <div style="{{ rootStyle }}">
+
+    <div style="position:absolute;inset:0;pointer-events:none;z-index:5;box-shadow:inset 0 0 120px 30px rgba(0,0,0,.6);background:radial-gradient(120% 80% at 50% -10%, rgba(201,162,39,.06), transparent 60%);"></div>
+
+    <sc-if value="{{ showFloatMute }}" hint-placeholder-val="{{ true }}">
+      <button data-nosfx="1" style="{{ muteFloatStyle }}" onClick="{{ onToggleMute }}">{{ muteLabel }}</button>
+    </sc-if>
+
+    <!-- ===== HEADER ===== -->
+    <sc-if value="{{ showHeader }}" hint-placeholder-val="{{ true }}">
+      <div style="position:relative;z-index:6;display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(#1c1610,#151009);border-bottom:1px solid #3a2f1c;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid #6b5324;background:#221a0e;flex:none;">
+          <div style="font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#e6c757;line-height:1;">{{ hud.lvl }}</div>
+          <div style="font-size:8px;letter-spacing:1px;color:#8a7238;text-transform:uppercase;">Nível</div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:10px;color:#b06a5a;width:20px;font-family:'Cinzel',serif;">VIT</span>
+            <div style="flex:1;height:9px;background:#2a1712;border:1px solid #4a2a22;overflow:hidden;"><div style="{{ hud.hpBar }}"></div></div>
+            <span style="font-size:10px;color:#cbb98f;width:58px;text-align:right;">{{ hud.hpText }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:10px;color:#5a78b0;width:20px;font-family:'Cinzel',serif;">MAN</span>
+            <div style="flex:1;height:9px;background:#12192a;border:1px solid #22304a;overflow:hidden;"><div style="{{ hud.mpBar }}"></div></div>
+            <span style="font-size:10px;color:#cbb98f;width:58px;text-align:right;">{{ hud.mpText }}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;flex:none;padding-left:4px;">
+          <div style="font-family:'Cinzel',serif;color:#e6c757;font-size:15px;font-weight:700;">{{ hud.gold }}</div>
+          <div style="font-size:8px;letter-spacing:1px;color:#8a7238;text-transform:uppercase;">Ouro</div>
+        </div>
+        <button data-nosfx="1" style="{{ muteHeaderStyle }}" onClick="{{ onToggleMute }}">{{ muteGlyphShort }}</button>
+      </div>
+    </sc-if>
+
+    <div style="{{ scrollStyle }}" data-scroll="1">
+
+      <!-- ===== TITLE ===== -->
+      <sc-if value="{{ isTitle }}" hint-placeholder-val="{{ true }}">
+        <div style="position:relative;min-height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 28px;overflow:hidden;">
+          <div style="position:absolute;inset:0;z-index:0;">{{ titleFx }}</div>
+          <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
+            <div style="font-size:11px;letter-spacing:5px;color:#8a7238;text-transform:uppercase;margin-bottom:22px;">Uma saga de fantasia</div>
+            <div style="width:54px;height:1px;background:linear-gradient(90deg,transparent,#c9a227,transparent);margin-bottom:26px;"></div>
+            <h1 style="font-family:'Cinzel',serif;font-weight:800;font-size:44px;line-height:1.02;color:#e6c757;margin:0;letter-spacing:1px;animation:titlePulse 4s ease-in-out infinite;">SOMBRAS<br>DE ELDROS</h1>
+            <div style="width:54px;height:1px;background:linear-gradient(90deg,transparent,#c9a227,transparent);margin:26px 0;"></div>
+            <p style="color:#a8946a;font-size:15px;line-height:1.6;max-width:300px;margin:0 0 36px;font-style:italic;">Três atos, dezenove regiões e um Dragão Negro no fim do mundo. Forje um herói — ou um tirano — através de uma jornada que dura muitas horas.</p>
+            <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:260px;">
+              <sc-if value="{{ hasSave }}" hint-placeholder-val="{{ true }}">
+                <button style="{{ btnPrimary }}" onClick="{{ onContinue }}">Continuar Jornada</button>
+              </sc-if>
+              <button style="{{ btnGhost }}" onClick="{{ onNew }}">Nova Jornada</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== CLASS ===== -->
+      <sc-if value="{{ isClass }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:26px 20px;animation:floatUp .4s ease;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:10px;letter-spacing:4px;color:#8a7238;text-transform:uppercase;">Forje sua lenda</div>
+            <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:26px;margin:8px 0 0;">Escolha seu Caminho</h2>
+          </div>
+          <sc-for list="{{ classes }}" as="c" hint-placeholder-count="3">
+            <button style="{{ c.cardStyle }}" onClick="{{ c.onClick }}">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div style="flex:none;width:64px;height:64px;position:relative;">{{ c.art }}</div>
+                <div style="flex:1;">
+                  <div style="font-family:'Cinzel',serif;font-size:19px;color:#e6c757;margin-bottom:5px;">{{ c.name }}</div>
+                  <div style="color:#a8946a;font-size:13px;line-height:1.45;margin-bottom:8px;">{{ c.desc }}</div>
+                  <div style="font-size:11px;color:#7d6a44;letter-spacing:.5px;font-family:'Cinzel',serif;">{{ c.stats }}</div>
+                </div>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- ===== TALENT ===== -->
+      <sc-if value="{{ isTalent }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:30px 20px;animation:floatUp .4s ease;min-height:100%;display:flex;flex-direction:column;justify-content:center;">
+          <div style="text-align:center;margin-bottom:22px;">
+            <div style="font-size:10px;letter-spacing:4px;color:#8a7238;text-transform:uppercase;">Evolução</div>
+            <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:26px;margin:8px 0 6px;">Novo Talento</h2>
+            <p style="color:#a8946a;font-size:13px;font-style:italic;margin:0;">{{ talentSub }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ talents }}" as="t" hint-placeholder-count="3">
+              <button style="{{ t.cardStyle }}" onClick="{{ t.onClick }}">
+                <div style="font-family:'Cinzel',serif;font-size:17px;color:#e6c757;margin-bottom:4px;">{{ t.name }}</div>
+                <div style="color:#a8946a;font-size:13px;line-height:1.45;">{{ t.desc }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== MAP ===== -->
+      <sc-if value="{{ isMap }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 14px 4px;animation:floatUp .35s ease;">
+          <div style="text-align:center;margin-bottom:6px;">
+            <div style="font-size:9px;letter-spacing:4px;color:#8a7238;text-transform:uppercase;">Reino de Eldros</div>
+            <div style="font-family:'Cinzel',serif;color:#e6c757;font-size:15px;margin-top:3px;">{{ map.progress }}</div>
+            <div style="font-family:'Cinzel',serif;color:#8a7238;font-size:11px;margin-top:2px;">{{ map.sub }}</div>
+          </div>
+          <div style="position:relative;height:1160px;margin:6px 0;border:1px solid #3a2f1c;background:linear-gradient(180deg,#2a1810 0%,#1a1410 30%,#141008 65%,#0e1a14 100%);overflow:hidden;">
+            <div style="position:absolute;inset:0;z-index:0;">{{ map.fx }}</div>
+            <sc-for list="{{ map.actLabels }}" as="al" hint-placeholder-count="3">
+              <div style="{{ al.style }}">{{ al.name }}</div>
+            </sc-for>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;">
+              <sc-for list="{{ map.lines }}" as="ln" hint-placeholder-count="12">
+                <line x1="{{ ln.x1 }}" y1="{{ ln.y1 }}" x2="{{ ln.x2 }}" y2="{{ ln.y2 }}" stroke="{{ ln.stroke }}" stroke-width="0.4" stroke-dasharray="1.5 1.8"></line>
+              </sc-for>
+            </svg>
+            <sc-for list="{{ map.nodes }}" as="node" hint-placeholder-count="12">
+              <button style="{{ node.wrapStyle }}" onClick="{{ node.onClick }}">
+                <span style="{{ node.tokenStyle }}">{{ node.glyph }}</span>
+                <span style="{{ node.labelStyle }}">{{ node.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== TOWN ===== -->
+      <sc-if value="{{ isTown }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:floatUp .35s ease;">
+          <div style="position:relative;height:150px;overflow:hidden;border-bottom:1px solid #3a2f1c;">{{ town.banner }}</div>
+          <div style="padding:18px 20px;">
+            <div style="text-align:center;margin-bottom:18px;margin-top:-2px;">
+              <div style="font-size:10px;letter-spacing:4px;color:#8a7238;text-transform:uppercase;">{{ town.sub }}</div>
+              <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:28px;margin:4px 0 8px;">{{ town.name }}</h2>
+              <p style="color:#a8946a;font-size:13px;line-height:1.5;font-style:italic;margin:0 auto;max-width:320px;">{{ town.flavor }}</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <button style="{{ btnGhost }}" onClick="{{ town.onRest }}">Descansar — restaura vida e mana</button>
+              <button style="{{ btnGhost }}" onClick="{{ town.onShop }}">Mercador — comprar suprimentos</button>
+              <button style="{{ btnGhost }}" onClick="{{ town.onElder }}">{{ town.npcBtn }}</button>
+              <button style="{{ btnPrimary }}" onClick="{{ town.onMap }}">Partir em Jornada</button>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:18px;">
+              <button style="{{ btnMini }}" onClick="{{ onOpenChar }}">Herói</button>
+              <button style="{{ btnMini }}" onClick="{{ onOpenInv }}">Inventário</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== HUNT ===== -->
+      <sc-if value="{{ isHunt }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:floatUp .35s ease;min-height:100%;display:flex;flex-direction:column;">
+          <div style="position:relative;height:172px;overflow:hidden;border-bottom:1px solid #3a2f1c;">
+            {{ hunt.banner }}
+            <div style="position:absolute;left:0;right:0;bottom:10px;text-align:center;z-index:3;">
+              <div style="font-size:10px;letter-spacing:4px;color:#e6c757;text-transform:uppercase;text-shadow:0 2px 8px #000;">{{ hunt.place }}</div>
+            </div>
+          </div>
+          <div style="padding:22px 20px;flex:1;display:flex;flex-direction:column;">
+            <div style="flex:1;">
+              <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Terreno de Caça</div>
+              <p style="color:#ddcba0;font-size:15px;line-height:1.65;margin:0 0 14px;text-wrap:pretty;">{{ hunt.flavor }}</p>
+              <div style="color:#7d9a5a;font-size:13px;font-family:'Cinzel',serif;margin-bottom:6px;">{{ hunt.tier }}</div>
+              <div style="color:#8a7238;font-size:13px;font-style:italic;">{{ hunt.streak }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;">
+              <button style="{{ btnPrimary }}" onClick="{{ hunt.onHunt }}">Caçar uma presa</button>
+              <button style="{{ btnGhost }}" onClick="{{ hunt.onLeave }}">Retornar ao mapa</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== SCENE ===== -->
+      <sc-if value="{{ isScene }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:floatUp .35s ease;min-height:100%;display:flex;flex-direction:column;">
+          <div style="position:relative;height:172px;overflow:hidden;border-bottom:1px solid #3a2f1c;">
+            {{ scene.banner }}
+            <div style="position:absolute;left:0;right:0;bottom:10px;text-align:center;z-index:3;">
+              <div style="font-size:10px;letter-spacing:4px;color:#e6c757;text-transform:uppercase;text-shadow:0 2px 8px #000;">{{ scene.place }}</div>
+            </div>
+          </div>
+          <div style="padding:20px;flex:1;display:flex;flex-direction:column;">
+            <div style="flex:1;">
+              <sc-if value="{{ scene.hasSpeaker }}" hint-placeholder-val="{{ false }}">
+                <div style="font-family:'Cinzel',serif;color:#c98a5a;font-size:13px;margin-bottom:6px;letter-spacing:.5px;">{{ scene.speaker }}</div>
+              </sc-if>
+              <p style="color:#ddcba0;font-size:16px;line-height:1.7;margin:0;text-wrap:pretty;">{{ scene.text }}</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;">
+              <sc-for list="{{ scene.choices }}" as="ch" hint-placeholder-count="2">
+                <button style="{{ ch.style }}" onClick="{{ ch.onClick }}">
+                  <span>{{ ch.label }}</span>
+                  <sc-if value="{{ ch.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ ch.tagStyle }}">{{ ch.tag }}</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== COMBAT ===== -->
+      <sc-if value="{{ isCombat }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;min-height:100%;">
+          <div style="padding:12px 16px 0;text-align:center;">
+            <div style="font-family:'Cinzel',serif;color:#e6c757;font-size:17px;line-height:1.15;">{{ combat.enemyName }}</div>
+            <div style="display:flex;align-items:center;gap:8px;max-width:250px;margin:7px auto 0;">
+              <div style="flex:1;height:10px;background:#2a1712;border:1px solid #4a2a22;overflow:hidden;"><div style="{{ combat.enemyHpBar }}"></div></div>
+              <span style="font-size:11px;color:#cbb98f;width:64px;text-align:left;">{{ combat.enemyHpText }}</span>
+            </div>
+          </div>
+          <div style="position:relative;height:236px;margin:8px 0 6px;overflow:hidden;">{{ combat.stage }}</div>
+          <div style="flex:1;background:#120d07;border-top:1px solid #33291a;border-bottom:1px solid #33291a;margin:0 0 8px;padding:10px 16px;overflow-y:auto;min-height:80px;">
+            <sc-for list="{{ combat.logLines }}" as="line" hint-placeholder-count="3">
+              <div style="{{ line.style }}">{{ line.text }}</div>
+            </sc-for>
+          </div>
+          <div style="padding:0 16px;display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <span style="font-size:10px;color:#b06a5a;font-family:'Cinzel',serif;">VIT</span>
+            <div style="flex:1;height:8px;background:#2a1712;border:1px solid #4a2a22;overflow:hidden;"><div style="{{ combat.heroHpBar }}"></div></div>
+            <span style="font-size:10px;color:#5a78b0;font-family:'Cinzel',serif;">MAN</span>
+            <div style="flex:1;height:8px;background:#12192a;border:1px solid #22304a;overflow:hidden;"><div style="{{ combat.heroMpBar }}"></div></div>
+            <sc-if value="{{ combat.hasWard }}" hint-placeholder-val="{{ false }}"><span style="{{ combat.wardStyle }}">{{ combat.wardText }}</span></sc-if>
+          </div>
+          <div style="padding:0 16px 14px;">
+            <sc-if value="{{ combat.isVictory }}" hint-placeholder-val="{{ false }}">
+              <button style="{{ btnPrimary }}" onClick="{{ combat.onContinue }}">Prosseguir</button>
+            </sc-if>
+            <sc-if value="{{ combat.menuRoot }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+                <sc-for list="{{ combat.rootActions }}" as="a" hint-placeholder-count="4">
+                  <button style="{{ a.style }}" onClick="{{ a.onClick }}">{{ a.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ combat.menuSub }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ combat.subList }}" as="a" hint-placeholder-count="2">
+                  <button style="{{ a.style }}" onClick="{{ a.onClick }}">
+                    <span>{{ a.label }}</span><span style="{{ a.metaStyle }}">{{ a.meta }}</span>
+                  </button>
+                </sc-for>
+                <button style="{{ btnMini }}" onClick="{{ combat.onBack }}">Voltar</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== INVENTORY ===== -->
+      <sc-if value="{{ isInv }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:20px;animation:floatUp .3s ease;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:22px;margin:0;">Inventário</h2>
+            <button style="{{ btnMini }}" onClick="{{ onCloseOverlay }}">Voltar</button>
+          </div>
+          <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Equipado</div>
+          <div style="display:flex;gap:8px;margin-bottom:20px;">
+            <div style="{{ inv.slotStyle }}"><div style="font-size:10px;color:#8a7238;">Arma</div><div style="color:#ddcba0;font-size:13px;font-family:'Cinzel',serif;margin-top:3px;">{{ inv.weapon }}</div></div>
+            <div style="{{ inv.slotStyle }}"><div style="font-size:10px;color:#8a7238;">Armadura</div><div style="color:#ddcba0;font-size:13px;font-family:'Cinzel',serif;margin-top:3px;">{{ inv.armor }}</div></div>
+            <div style="{{ inv.slotStyle }}"><div style="font-size:10px;color:#8a7238;">Relíquia</div><div style="color:#ddcba0;font-size:13px;font-family:'Cinzel',serif;margin-top:3px;">{{ inv.relic }}</div></div>
+          </div>
+          <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Bolsa</div>
+          <sc-if value="{{ inv.empty }}" hint-placeholder-val="{{ false }}"><div style="color:#7d6a44;font-style:italic;font-size:14px;padding:12px 0;">Sua bolsa está vazia.</div></sc-if>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <sc-for list="{{ inv.items }}" as="it" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:12px;background:#1a140c;border:1px solid #3a2f1c;padding:11px 13px;">
+                <div style="flex:1;">
+                  <div style="color:#ddcba0;font-size:15px;font-family:'Cinzel',serif;">{{ it.name }} <span style="color:#8a7238;font-size:13px;">{{ it.qtyLabel }}</span></div>
+                  <div style="color:#8a7238;font-size:12px;margin-top:2px;">{{ it.desc }}</div>
+                </div>
+                <button style="{{ it.btnStyle }}" onClick="{{ it.onUse }}">{{ it.action }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== CHARACTER ===== -->
+      <sc-if value="{{ isChar }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:20px;animation:floatUp .3s ease;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:22px;margin:0;">{{ char.class }}</h2>
+            <button style="{{ btnMini }}" onClick="{{ onCloseOverlay }}">Voltar</button>
+          </div>
+          <div style="display:flex;justify-content:center;margin-bottom:14px;"><div style="width:100px;height:100px;position:relative;">{{ char.art }}</div></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+            <span style="font-size:11px;color:#8a7238;">Nível {{ char.lvl }}</span>
+            <div style="flex:1;height:6px;background:#221a0e;border:1px solid #3a2f1c;overflow:hidden;"><div style="{{ char.xpBar }}"></div></div>
+            <span style="font-size:11px;color:#8a7238;">{{ char.xpText }} XP</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin:18px 0;">
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Ataque</div><div style="{{ char.statNum }}">{{ char.atk }}</div></div>
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Defesa</div><div style="{{ char.statNum }}">{{ char.def }}</div></div>
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Crítico</div><div style="{{ char.statNum }}">{{ char.crit }}</div></div>
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Vida Máx.</div><div style="{{ char.statNum }}">{{ char.maxHp }}</div></div>
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Mana Máx.</div><div style="{{ char.statNum }}">{{ char.maxMp }}</div></div>
+            <div style="{{ char.statBox }}"><div style="font-size:10px;color:#8a7238;">Relíquia</div><div style="font-family:'Cinzel',serif;font-size:12px;color:#cbb98f;margin-top:4px;line-height:1.2;">{{ char.relic }}</div></div>
+          </div>
+          <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Magias Conhecidas</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+            <sc-for list="{{ char.spells }}" as="sp" hint-placeholder-count="2">
+              <span style="background:#161f2e;border:1px solid #2a3a54;color:#9bb4d8;font-size:13px;padding:6px 11px;font-family:'Cinzel',serif;">{{ sp.name }} <span style="color:#5a78b0;">·{{ sp.cost }}mp</span></span>
+            </sc-for>
+          </div>
+          <sc-if value="{{ char.hasTalents }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Talentos</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+              <sc-for list="{{ char.talents }}" as="tl" hint-placeholder-count="2">
+                <span style="background:#241a0e;border:1px solid #6b5324;color:#e6c757;font-size:12px;padding:6px 11px;font-family:'Cinzel',serif;">{{ tl.name }}</span>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="font-size:10px;letter-spacing:3px;color:#8a7238;text-transform:uppercase;margin-bottom:8px;">Alinhamento</div>
+          <div style="position:relative;height:8px;background:linear-gradient(90deg,#5a2a22,#33291a,#3a4a2a);border:1px solid #3a2f1c;">
+            <div style="{{ char.alignMark }}"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#7d6a44;"><span>Ambição</span><span style="{{ char.alignLabelStyle }}">{{ char.alignLabel }}</span><span>Honra</span></div>
+        </div>
+      </sc-if>
+
+      <!-- ===== SHOP ===== -->
+      <sc-if value="{{ isShop }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:20px;animation:floatUp .3s ease;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <h2 style="font-family:'Cinzel',serif;color:#e6c757;font-size:22px;margin:0;">Mercador</h2>
+            <button style="{{ btnMini }}" onClick="{{ shop.onClose }}">Voltar</button>
+          </div>
+          <p style="color:#a8946a;font-size:13px;font-style:italic;margin:0 0 16px;">"{{ shop.line }}"</p>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <sc-for list="{{ shop.items }}" as="it" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;background:#1a140c;border:1px solid #3a2f1c;padding:11px 13px;">
+                <div style="flex:1;">
+                  <div style="color:#ddcba0;font-size:15px;font-family:'Cinzel',serif;">{{ it.name }}</div>
+                  <div style="color:#8a7238;font-size:12px;margin-top:2px;">{{ it.desc }}</div>
+                </div>
+                <button style="{{ it.btnStyle }}" onClick="{{ it.onBuy }}">{{ it.priceLabel }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== ENDING ===== -->
+      <sc-if value="{{ isEnding }}" hint-placeholder-val="{{ true }}">
+        <div style="position:relative;min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:40px 26px;text-align:center;animation:floatUp .6s ease;overflow:hidden;">
+          <div style="position:absolute;inset:0;z-index:0;">{{ ending.fx }}</div>
+          <div style="position:relative;z-index:1;">
+            <div style="font-size:10px;letter-spacing:5px;color:#8a7238;text-transform:uppercase;margin-bottom:14px;">Fim da Jornada</div>
+            <div style="width:44px;height:1px;background:linear-gradient(90deg,transparent,#c9a227,transparent);margin:0 auto 22px;"></div>
+            <h1 style="font-family:'Cinzel',serif;font-weight:800;font-size:28px;color:#e6c757;margin:0 0 22px;line-height:1.15;">{{ ending.title }}</h1>
+            <p style="color:#c8b68c;font-size:16px;line-height:1.7;margin:0 0 30px;text-wrap:pretty;">{{ ending.text }}</p>
+            <div style="color:#7d6a44;font-size:12px;font-family:'Cinzel',serif;letter-spacing:1px;margin-bottom:34px;">{{ ending.stats }}</div>
+            <button style="{{ btnPrimary }}" onClick="{{ onRestart }}">Recomeçar a Lenda</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===== GAME OVER ===== -->
+      <sc-if value="{{ isOver }}" hint-placeholder-val="{{ true }}">
+        <div style="min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:40px 26px;text-align:center;animation:floatUp .6s ease;">
+          <h1 style="font-family:'Cinzel',serif;font-weight:800;font-size:34px;color:#a33a2a;margin:0 0 18px;text-shadow:0 2px 24px rgba(163,58,42,.4);">VOCÊ TOMBOU</h1>
+          <p style="color:#a8946a;font-size:16px;line-height:1.7;font-style:italic;margin:0 auto 20px;max-width:300px;">{{ over.text }}</p>
+          <p style="color:#7d6a44;font-size:13px;line-height:1.6;margin:0 auto 34px;max-width:300px;">{{ over.hint }}</p>
+          <button style="{{ btnPrimary }}" onClick="{{ onRevive }}">Continuar da Última Vila</button>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;z-index:6;display:flex;gap:8px;padding:10px 14px;background:linear-gradient(#151009,#1c1610);border-top:1px solid #3a2f1c;">
+        <button style="{{ navBtn }}" onClick="{{ onGotoTown }}">Vila</button>
+        <button style="{{ navBtn }}" onClick="{{ onOpenChar }}">Herói</button>
+        <button style="{{ navBtn }}" onClick="{{ onOpenInv }}">Inventário</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;bottom:78px;left:50%;z-index:20;background:rgba(20,14,8,.96);border:1px solid #6b5324;color:#e6c757;font-size:13px;padding:9px 16px;max-width:82%;text-align:center;animation:toastIn .25s ease;box-shadow:0 6px 24px rgba(0,0,0,.5);">{{ toast }}</div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:900},&quot;difficulty&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;options&quot;:[&quot;Fácil&quot;,&quot;Normal&quot;,&quot;Difícil&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Jogo&quot;},&quot;largeText&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Acessibilidade&quot;}}">
+class Component extends DCLogic {
+  KEY = 'eldros_save_v2';
+  LEVEL_CAP = 30;
+
+  CLASSES = {
+    guerreiro:{name:'Guerreiro', desc:'Força bruta e resistência. Domina o campo pela lâmina.', hp:60, mp:10, atk:12, def:6, crit:0.15, spells:['fire'], cre:'guerreiro'},
+    mago:{name:'Mago', desc:'Frágil de corpo, devastador em magia. Cada feitiço é uma sentença.', hp:40, mp:28, atk:6, def:2, crit:0.15, spells:['fire','heal'], cre:'mago'},
+    ladino:{name:'Ladino', desc:'Ágil e letal. Golpes certeiros e fuga quando preciso.', hp:48, mp:14, atk:10, def:3, crit:0.28, spells:['fire'], cre:'ladino'},
+  };
+
+  ITEMS = {
+    potion:{name:'Poção de Cura', kind:'consum', use:'heal', val:35, price:12, desc:'Restaura 35 de vida'},
+    elixir:{name:'Elixir Maior', kind:'consum', use:'heal', val:90, price:44, desc:'Restaura 90 de vida'},
+    ether:{name:'Elixir de Mana', kind:'consum', use:'mana', val:20, price:16, desc:'Restaura 20 de mana'},
+    ether2:{name:'Elixir de Mana Maior', kind:'consum', use:'mana', val:45, price:40, desc:'Restaura 45 de mana'},
+    phoenix:{name:'Pena de Fênix', kind:'consum', use:'full', price:95, desc:'Restaura toda a vida e mana'},
+    iron_sword:{name:'Espada de Ferro', kind:'weapon', atk:0, tier:0, desc:'Arma inicial confiável'},
+    steel_sword:{name:'Lâmina de Aço', kind:'weapon', atk:6, tier:1, price:70, desc:'+6 de ataque'},
+    rune_sword:{name:'Lâmina Rúnica', kind:'weapon', atk:11, tier:2, price:150, desc:'+11 de ataque, gravada com runas'},
+    flame_brand:{name:'Tição Flamejante', kind:'weapon', atk:17, crit:0.06, tier:3, price:320, desc:'+17 ataque, +6% crítico'},
+    dragon_fang:{name:'Presa do Dragão', kind:'weapon', atk:26, crit:0.10, tier:4, price:640, desc:'+26 ataque, +10% crítico'},
+    leather:{name:'Gibão de Couro', kind:'armor', def:0, tier:0, desc:'Proteção inicial'},
+    chain:{name:'Cota de Anéis', kind:'armor', def:4, tier:1, price:60, desc:'+4 de defesa'},
+    plate:{name:'Armadura de Placas', kind:'armor', def:8, tier:2, price:150, desc:'+8 de defesa'},
+    rune_plate:{name:'Placa Rúnica', kind:'armor', def:13, maxHp:15, tier:3, price:320, desc:'+13 defesa, +15 vida máx.'},
+    dragon_scale:{name:'Escamas de Dragão', kind:'armor', def:20, maxHp:30, tier:4, price:640, desc:'+20 defesa, +30 vida máx.'},
+    ring_vigor:{name:'Anel do Vigor', kind:'relic', maxHp:30, price:110, desc:'+30 de vida máxima'},
+    ring_focus:{name:'Anel do Foco', kind:'relic', maxMp:20, price:110, desc:'+20 de mana máxima'},
+    ring_fury:{name:'Anel da Fúria', kind:'relic', atk:7, price:150, desc:'+7 de ataque'},
+    ring_aegis:{name:'Anel da Égide', kind:'relic', def:6, price:150, desc:'+6 de defesa'},
+    amulet_crit:{name:'Amuleto do Predador', kind:'relic', crit:0.18, price:190, desc:'+18% de chance crítica'},
+    amulet_sage:{name:'Amuleto do Sábio', kind:'relic', maxMp:35, spellPow:0.15, price:280, desc:'+35 mana, +15% dano mágico'},
+  };
+
+  SPELLS = {
+    fire:{name:'Bola de Fogo', cost:5, dmg:16, kind:'fire', desc:'~16 de dano ígneo'},
+    ice:{name:'Lança de Gelo', cost:9, dmg:24, kind:'ice', desc:'~24 de dano glacial'},
+    heal:{name:'Cura Menor', cost:7, heal:30, kind:'heal', desc:'Cura 30 de vida'},
+    drain:{name:'Dreno Vital', cost:11, dmg:22, drain:0.6, kind:'drain', desc:'~22 dano; cura 60% do dano'},
+    thunder:{name:'Raio Ancião', cost:12, dmg:36, kind:'thunder', desc:'~36 de dano fulminante'},
+    greaterHeal:{name:'Cura Maior', cost:16, heal:85, kind:'heal', desc:'Cura 85 de vida'},
+    ward:{name:'Escudo Arcano', cost:14, ward:3, kind:'ward', desc:'Reduz o dano recebido por 3 turnos'},
+    blizzard:{name:'Tormenta Glacial', cost:20, dmg:54, kind:'ice', desc:'~54 de dano glacial'},
+    holy:{name:'Luz Sagrada', cost:24, dmg:60, holy:true, kind:'holy', desc:'~60 dano; dobra contra mortos-vivos'},
+    meteor:{name:'Meteoro', cost:28, dmg:82, kind:'fire', desc:'~82 de dano devastador'},
+  };
+  LEVEL_SPELLS = {3:'ice', 4:'heal', 5:'drain', 7:'greaterHeal', 9:'thunder', 12:'ward', 15:'blizzard', 18:'holy', 22:'meteor'};
+  TALENT_LEVELS = [3,6,9,12,15,18,21,24,27,30];
+
+  TALENTS = {
+    t_might:{name:'Fúria de Guerra', desc:'+5 de ataque permanente.', bonus:{atk:5}},
+    t_guard:{name:'Pele de Ferro', desc:'+4 de defesa permanente.', bonus:{def:4}},
+    t_vitality:{name:'Vitalidade', desc:'+30 de vida máxima.', bonus:{maxHp:30}},
+    t_arcane:{name:'Poço Arcano', desc:'+18 de mana máxima.', bonus:{maxMp:18}},
+    t_precision:{name:'Olho do Predador', desc:'+12% de chance de crítico.', bonus:{crit:0.12}},
+    t_spellpow:{name:'Canalizador', desc:'+20% de dano com magias.', bonus:{spellPow:0.20}},
+    t_lifedrain:{name:'Sede de Sangue', desc:'Ataques curam 15% do dano causado.'},
+    t_regen:{name:'Regeneração', desc:'Recupera 5% da vida a cada turno.'},
+    t_berserk:{name:'Fúria Selvagem', desc:'+30% de dano quando abaixo de 30% de vida.'},
+    t_executioner:{name:'Carrasco', desc:'+45% de dano contra inimigos muito feridos.'},
+    t_thrift:{name:'Economia Mística', desc:'Magias custam 20% menos mana.'},
+    t_manaburn:{name:'Fluxo de Mana', desc:'Ataques restauram 3 de mana.'},
+  };
+
+  ENEMIES = {
+    goblin:{name:'Goblin Saqueador', hp:22, atk:6, xp:14, gold:8, cre:'goblin'},
+    wolf:{name:'Lobo Faminto', hp:28, atk:8, xp:18, gold:9, cre:'wolf'},
+    skeleton:{name:'Esqueleto Errante', hp:32, atk:9, xp:22, gold:11, undead:true, cre:'skeleton'},
+    ghoul:{name:'Carniçal das Ruínas', hp:44, atk:12, xp:28, gold:15, undead:true, cre:'ghoul'},
+    bandit:{name:'Bandido do Passo', hp:40, atk:11, xp:26, gold:32, cre:'bandit'},
+    spider:{name:'Aranha Cavernosa', hp:54, atk:14, xp:38, gold:18, cre:'spider'},
+    harpy:{name:'Harpia Rapace', hp:48, atk:16, xp:40, gold:20, cre:'harpy'},
+    wraith:{name:'Espectro do Pântano', hp:64, atk:17, xp:46, gold:24, drop:'elixir', cre:'wraith'},
+    cultist:{name:'Cultista Sombrio', hp:60, atk:18, xp:50, gold:28, cre:'cultist'},
+    basilisk:{name:'Basilisco das Dunas', hp:78, atk:19, xp:56, gold:30, cre:'basilisk'},
+    revenant:{name:'Renegado Morto-Vivo', hp:82, atk:20, xp:62, gold:26, undead:true, cre:'revenant'},
+    dark_soldier:{name:'Soldado das Sombras', hp:98, atk:23, xp:78, gold:40, cre:'darkknight'},
+    gargoyle:{name:'Gárgula de Pedra', hp:112, atk:25, xp:90, gold:44, cre:'gargoyle'},
+    wight:{name:'Tumular Ancião', hp:140, atk:29, xp:115, gold:56, undead:true, cre:'wight'},
+    troll:{name:'Trol da Fenda', hp:134, atk:27, xp:98, gold:48, cre:'troll'},
+    demon:{name:'Demônio Flamejante', hp:156, atk:31, xp:124, gold:60, cre:'demon'},
+    fenrada:{name:'Fenrada, a Loba-Mãe', hp:230, atk:22, xp:280, gold:130, boss:true, drop:'ring_vigor', cre:'direwolf'},
+    mordrath:{name:'Mordrath, o Necromante', hp:360, atk:29, xp:520, gold:260, boss:true, undead:true, drop:'amulet_sage', cre:'lich'},
+    general:{name:'Vharok, General das Sombras', hp:480, atk:35, xp:760, gold:380, boss:true, drop:'dragon_scale', cre:'general'},
+    dragon:{name:'Kaltharax, o Dragão Negro', hp:680, atk:41, xp:1600, gold:900, boss:true, cre:'dragon'},
+  };
+
+  CRE = {
+    guerreiro:{size:88, body:'#8a94a0', dark:'#3a4048', eye:'#cfe0ff', feat:'knight'},
+    mago:{size:88, body:'#5a6ab0', dark:'#2a3260', eye:'#bcd0ff', feat:'mage'},
+    ladino:{size:88, body:'#7a8a5a', dark:'#3a442a', eye:'#e0ffa0', feat:'hood'},
+    goblin:{size:78, body:'#7aa05a', dark:'#3a4f2a', eye:'#ffe06a', feat:'ears'},
+    wolf:{size:88, body:'#8a8f7a', dark:'#4a4f3e', eye:'#ffd24a', feat:'ears'},
+    skeleton:{size:86, body:'#d8d2c0', dark:'#7a7364', eye:'#9fe0ff', feat:'jag'},
+    ghoul:{size:96, body:'#9a7aa0', dark:'#4a344f', eye:'#c9ff8a', feat:'jag'},
+    bandit:{size:88, body:'#b89a6a', dark:'#5a4630', eye:'#ffe6a0', feat:'mask'},
+    spider:{size:92, body:'#5a4a6a', dark:'#2a2038', eye:'#ff5a5a', feat:'spider'},
+    harpy:{size:90, body:'#a88a6a', dark:'#4f3d28', eye:'#ffd24a', feat:'hood', wings:'small'},
+    wraith:{size:100, body:'#6ad0c0', dark:'#2a5a54', eye:'#eafff9', feat:'wisp', spirit:true},
+    cultist:{size:88, body:'#8a3a4a', dark:'#4a1a24', eye:'#ff8a6a', feat:'hood'},
+    basilisk:{size:102, body:'#6a9a5a', dark:'#2f4f28', eye:'#ffe06a', feat:'jag'},
+    revenant:{size:96, body:'#9aa0a8', dark:'#4a5058', eye:'#9fe0ff', feat:'jag', spirit:true},
+    darkknight:{size:96, body:'#4a4e58', dark:'#1e2126', eye:'#ff5a4a', feat:'knight'},
+    gargoyle:{size:112, body:'#7a7e88', dark:'#3a3e48', eye:'#ff8a3a', feat:'horns', wings:'small'},
+    wight:{size:112, body:'#8a9a8a', dark:'#3a4a3a', eye:'#c9ff8a', feat:'hood', spirit:true},
+    troll:{size:126, body:'#7a8a5a', dark:'#3a442a', eye:'#ffd24a', feat:'tusks'},
+    demon:{size:126, body:'#a3301a', dark:'#4a0f08', eye:'#ffcf3a', feat:'horns', wings:'small'},
+    direwolf:{size:132, body:'#5a5f52', dark:'#26291f', eye:'#ff6a3a', feat:'ears'},
+    lich:{size:114, body:'#7a8ab0', dark:'#2a3050', eye:'#9fffe0', feat:'mage', spirit:true},
+    general:{size:134, body:'#6a2e2a', dark:'#2a0f0a', eye:'#ffcf3a', feat:'knight'},
+    dragon:{size:156, body:'#7a2a22', dark:'#2a0f0a', eye:'#ffcf3a', feat:'dragon'},
+  };
+
+  LOCFX = {
+    vila:{sky:['#2a2014','#140e08'], part:'ember', sil:'town', accent:'#e6c757'},
+    floresta:{sky:['#16210f','#0a1206'], part:'firefly', sil:'trees', accent:'#9ad06a'},
+    montanha:{sky:['#1a2430','#0b1018'], part:'snow', sil:'peaks', accent:'#9ab4d8'},
+    ruinas:{sky:['#20161f','#0d090d'], part:'dust', sil:'ruins', accent:'#b48ac0'},
+    toca:{sky:['#1a1810','#0b0a06'], part:'dust', sil:'trees', accent:'#c98a5a'},
+    cacadaI:{sky:['#16210f','#0a1206'], part:'firefly', sil:'trees', accent:'#9ad06a'},
+    porto:{sky:['#12202a','#08121a'], part:'wisp', sil:'town', accent:'#6ab0d0'},
+    pantano:{sky:['#101f1c','#07100e'], part:'wisp', sil:'swamp', accent:'#6ad0c0'},
+    caverna:{sky:['#161016','#0a070a'], part:'dust', sil:'peaks', accent:'#9a8ac0'},
+    deserto:{sky:['#2a2416','#14100a'], part:'dust', sil:'dunes', accent:'#e6c777'},
+    cacadaII:{sky:['#101f1c','#07100e'], part:'wisp', sil:'swamp', accent:'#6ad0c0'},
+    catacumba:{sky:['#161a18','#080b0a'], part:'wisp', sil:'crypt', accent:'#8ac0a0'},
+    torre:{sky:['#161426','#080714'], part:'wisp', sil:'fortress', accent:'#8a7ad0'},
+    acampamento:{sky:['#221a14','#100b07'], part:'ember', sil:'fortress', accent:'#e6c757'},
+    ermida:{sky:['#241a12','#0e0a06'], part:'ember', sil:'peaks', accent:'#e6c757'},
+    desfiladeiro:{sky:['#2e120a','#140503'], part:'ember', sil:'lair', accent:'#ff7a3a'},
+    cacadaIII:{sky:['#241414','#0b0606'], part:'ember', sil:'lair', accent:'#ff7a3a'},
+    fortaleza:{sky:['#1c1414','#0b0808'], part:'dust', sil:'fortress', accent:'#c98a5a'},
+    covil:{sky:['#2e100a','#140503'], part:'ember', sil:'lair', accent:'#ff6a3a'},
+  };
+
+  ACTS = {1:'O Chamado', 2:'A Travessia', 3:'A Guerra das Sombras'};
+
+  LOCS = {
+    vila:{name:'Pedrasola', x:50, y:95, act:1, type:'town', town:'pedrasola', glyph:'\u16A2'},
+    floresta:{name:'Floresta Sussurrante', x:26, y:87, act:1, type:'scene', glyph:'\u16A0'},
+    montanha:{name:'Passo Gélido', x:74, y:85, act:1, type:'scene', glyph:'\u16C1'},
+    ruinas:{name:'Ruínas de Valdris', x:20, y:75, act:1, type:'scene', glyph:'\u16B7'},
+    cacadaI:{name:'Bosque das Feras', x:80, y:73, act:1, type:'hunt', hunt:1, glyph:'\u16A6'},
+    toca:{name:'Toca da Alcateia', x:50, y:65, act:1, type:'scene', boss:true, glyph:'\u16D2'},
+    porto:{name:'Porto Salino', x:50, y:57, act:2, type:'town', town:'porto', glyph:'\u16C9'},
+    pantano:{name:'Pântano de Cinza', x:24, y:56, act:2, type:'scene', glyph:'\u16B9'},
+    caverna:{name:'Cavernas Ecoantes', x:78, y:54, act:2, type:'scene', glyph:'\u16A5'},
+    deserto:{name:'Dunas de Vhal', x:22, y:45, act:2, type:'scene', glyph:'\u16CB'},
+    cacadaII:{name:'Fossa dos Errantes', x:80, y:43, act:2, type:'hunt', hunt:2, glyph:'\u16A6'},
+    catacumba:{name:'Catacumbas de Vhal', x:40, y:38, act:2, type:'scene', glyph:'\u16B1'},
+    torre:{name:'Torre do Necromante', x:62, y:34, act:2, type:'scene', boss:true, glyph:'\u16A9'},
+    acampamento:{name:'Acampamento da Vanguarda', x:50, y:27, act:3, type:'town', town:'acampamento', glyph:'\u16DF'},
+    ermida:{name:'Ermida do Oráculo', x:24, y:24, act:3, type:'scene', glyph:'\u16DA'},
+    desfiladeiro:{name:'Desfiladeiro Flamejante', x:78, y:22, act:3, type:'scene', glyph:'\u16C4'},
+    cacadaIII:{name:'Campos de Cinza', x:22, y:14, act:3, type:'hunt', hunt:3, glyph:'\u16A6'},
+    fortaleza:{name:'Fortaleza Sombria', x:52, y:11, act:3, type:'scene', boss:true, glyph:'\u16A9'},
+    covil:{name:'Covil de Kaltharax', x:50, y:4, act:3, type:'scene', boss:true, glyph:'\u16C4'},
+  };
+
+  ORDER = ['vila','floresta','montanha','ruinas','cacadaI','toca','porto','pantano','caverna','deserto','cacadaII','catacumba','torre','acampamento','ermida','desfiladeiro','cacadaIII','fortaleza','covil'];
+  CONNS = [['vila','floresta'],['vila','montanha'],['floresta','ruinas'],['montanha','cacadaI'],['ruinas','toca'],['cacadaI','toca'],['toca','porto'],['porto','pantano'],['porto','caverna'],['pantano','deserto'],['caverna','cacadaII'],['deserto','catacumba'],['cacadaII','catacumba'],['catacumba','torre'],['torre','acampamento'],['acampamento','ermida'],['acampamento','desfiladeiro'],['ermida','cacadaIII'],['desfiladeiro','fortaleza'],['cacadaIII','fortaleza'],['fortaleza','covil']];
+
+  TOWNS = {
+    pedrasola:{name:'Pedrasola', sub:'Vila de', banner:'vila', flavor:'Fumaça de lareiras e o martelo do ferreiro. Os aldeões depositam em você a última esperança do reino.', npc:'Anciã Maerwyn', npcBtn:'Falar com a Anciã Maerwyn', npcLine:'Maerwyn: "A honra e a ambição moldam o fim que te espera. Escolha com peso, herói."', stock:['potion','ether','steel_sword','chain','ring_vigor','ring_focus']},
+    porto:{name:'Porto Salino', sub:'Enseada de', banner:'porto', flavor:'Gaivotas e maresia. Aqui os marinheiros contam da bruma que engole os incautos além das docas.', npc:'Capitã Yssra', npcBtn:'Ouvir a Capitã Yssra', npcLine:'Yssra: "As terras adiante devoram tolos. Compre bem antes de partir — e volte para gastar o ouro."', stock:['potion','elixir','ether','ether2','rune_sword','plate','ring_fury','ring_aegis','amulet_crit']},
+    acampamento:{name:'Acampamento da Vanguarda', sub:'Posto Avançado', banner:'acampamento', flavor:'Tendas rasgadas pelo vento e fogueiras que nunca apagam. A guerra contra as sombras começa a poucos passos daqui.', npc:'Comandante Dorne', npcBtn:'Reportar-se ao Comandante Dorne', npcLine:'Dorne: "O dragão está ao alcance. Muitos foram, nenhum voltou. Esteja pronto, soldado."', stock:['elixir','ether2','phoenix','flame_brand','dragon_fang','rune_plate','dragon_scale','amulet_sage']},
+  };
+
+  HUNTS = {
+    1:{name:'Bosque das Feras', flavor:'Um vale cerrado onde feras e saqueadores rondam sem fim. Bom lugar para afiar a lâmina e encher a bolsa.', pool:['goblin','wolf','skeleton','ghoul','bandit'], lvl:[1,7]},
+    2:{name:'Fossa dos Errantes', flavor:'Uma cratera enevoada de onde nada sai vivo por acaso. Presas mais duras, recompensas maiores.', pool:['spider','harpy','wraith','cultist','basilisk','revenant'], lvl:[7,16]},
+    3:{name:'Campos de Cinza', flavor:'A terra queimada aos pés da fortaleza fervilha de horrores. Aqui os verdadeiros veteranos forjam seu poder final.', pool:['dark_soldier','gargoyle','troll','wight','demon'], lvl:[16,30]},
+  };
+
+  SCENES = {
+    floresta:[
+      {place:'Floresta Sussurrante', text:'A floresta engole a luz do sol. Galhos retorcidos sussurram nomes que você jurava ter esquecido, e a trilha se divide diante de você.', choices:[
+        {label:'Seguir a trilha principal', goto:3},
+        {label:'Investigar os sussurros entre as árvores', goto:1},
+      ]},
+      {place:'Floresta Sussurrante', text:'Entre as ruínas de um acampamento, goblins saqueiam os corpos de viajantes. Um deles ergue os olhos amarelos na sua direção.', choices:[
+        {label:'Emboscar os goblins', combat:'goblin', goto:2},
+      ]},
+      {place:'Floresta Sussurrante', text:'Com os saqueadores dispersos, você recolhe o que restou entre as bagagens abandonadas.', choices:[
+        {label:'Pegar os suprimentos', reward:{gold:18, item:'potion'}, goto:3},
+      ]},
+      {place:'Floresta Sussurrante', text:'A mata se abre numa clareira banhada de luz — mas um lobo faminto guarda a passagem, presas à mostra e magro de fome.', choices:[
+        {label:'Partilhar sua comida e passar em paz', align:2, reward:{xp:14}, tag:'Honra', goto:5},
+        {label:'Abater a fera', combat:'wolf', goto:5},
+      ]},
+      {place:'Floresta Sussurrante', text:'.', choices:[]},
+      {place:'Floresta Sussurrante', text:'A trilha desce rumo às fronteiras do reino. Ao longe avistam-se as Ruínas de Valdris e o Passo Gélido.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    montanha:[
+      {place:'Passo Gélido', text:'O vento corta a montanha como lâminas. Pegadas frescas na neve traem uma emboscada logo adiante.', choices:[
+        {label:'Avançar com cautela', goto:1},
+      ]},
+      {place:'Passo Gélido', text:'Bandidos saltam das rochas! O líder sorri, punhal em riste: — Sua bolsa ou sua vida, viajante.', choices:[
+        {label:'Enfrentá-los', combat:'bandit', goto:2},
+        {label:'Entregar 30 de ouro sem lutar', align:-1, reward:{gold:-30}, tag:'Covardia', goto:2},
+      ]},
+      {place:'Passo Gélido', text:'Sob uma pedra coberta de gelo repousa uma cota de anéis, abandonada por um guerreiro esquecido pelo tempo.', choices:[
+        {label:'Vestir a armadura', reward:{item:'chain'}, goto:3},
+      ]},
+      {place:'Passo Gélido', text:'Num santuário congelado, ossos se erguem: um esqueleto guardião range as mandíbulas e ataca.', choices:[
+        {label:'Destruir o guardião', combat:'skeleton', goto:4},
+      ]},
+      {place:'Passo Gélido', text:'O caminho desce em espiral rumo ao litoral. O cheiro de sal já toma o ar.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    ruinas:[
+      {place:'Ruínas de Valdris', text:'Colunas partidas jazem sob musgo e silêncio milenar. Sobre um altar rachado repousa uma lâmina que pulsa com runas frias.', choices:[
+        {label:'Tomar a Lâmina Rúnica', align:-1, reward:{item:'rune_sword'}, tag:'Ambição', combat:'ghoul', goto:1},
+        {label:'Ajoelhar-se e honrar os mortos', align:2, reward:{xp:20}, tag:'Honra', combat:'ghoul', goto:1},
+      ]},
+      {place:'Ruínas de Valdris', text:'Perturbado o repouso, outro morto se ergue das lajes: um esqueleto de armadura enferrujada avança sobre você.', choices:[
+        {label:'Enfrentar o guardião', combat:'skeleton', goto:2},
+      ]},
+      {place:'Ruínas de Valdris', text:'Com os mortos aquietados, o silêncio retorna. Uma trilha estreita leva de volta ao coração do reino.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    toca:[
+      {place:'Toca da Alcateia', text:'A toca fede a feras e a morte. Ossos cobrem o chão. Das trevas ergue-se Fenrada, a Loba-Mãe — maior que um cavalo, olhos de brasa fixos em você.', choices:[
+        {label:'Enfrentar a Loba-Mãe', combat:'fenrada', goto:1},
+      ]},
+      {place:'Toca da Alcateia', text:'Fenrada tomba com um uivo que ecoa pelas montanhas. Além da toca, a estrada aberta desce até o Porto Salino — o Ato I chega ao fim, e o mundo se abre diante de você.', choices:[
+        {label:'Seguir rumo ao litoral', complete:true},
+      ]},
+    ],
+    pantano:[
+      {place:'Pântano de Cinza', text:'O ar fede a coisas afogadas. Luzes fátuas dançam sobre a lama negra, chamando-o para dentro.', choices:[
+        {label:'Seguir as luzes', goto:1},
+        {label:'Contornar pela margem firme', goto:1},
+      ]},
+      {place:'Pântano de Cinza', text:'As luzes eram uma armadilha. Da bruma, um espectro se materializa — olhos vazios, mãos como garras de fumaça.', choices:[
+        {label:'Enfrentar a aparição', combat:'wraith', goto:2},
+      ]},
+      {place:'Pântano de Cinza', text:'O espectro se desfaz num lamento agudo. A margem firme conduz de volta às estradas.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    caverna:[
+      {place:'Cavernas Ecoantes', text:'A boca da caverna exala ar frio e úmido. Teias grossas como cordas pendem da escuridão.', choices:[
+        {label:'Acender uma tocha e avançar', goto:1},
+        {label:'Deslizar em silêncio pelas sombras', goto:1},
+      ]},
+      {place:'Cavernas Ecoantes', text:'O chão treme com passos de muitas pernas. Uma aranha cavernosa desce do teto, presas gotejando veneno.', choices:[
+        {label:'Enfrentar a aranha', combat:'spider', goto:2},
+      ]},
+      {place:'Cavernas Ecoantes', text:'Numa câmara de cristais, um anel de aço escuro repousa sobre um esqueleto. Ao tocá-lo, harpias despertam nas alturas com gritos estridentes.', choices:[
+        {label:'Pegar o Anel da Égide e enfrentá-las', reward:{item:'ring_aegis'}, combat:'harpy', goto:3},
+      ]},
+      {place:'Cavernas Ecoantes', text:'A câmara se aquieta. Uma fenda de luz marca a saída de volta à superfície.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    deserto:[
+      {place:'Dunas de Vhal', text:'O sol de brasa cozinha as dunas cinzentas. Uma miragem tremula ao longe — água, ou algo pior.', choices:[
+        {label:'Seguir a miragem', goto:1},
+        {label:'Orientar-se pelas estrelas', goto:1},
+      ]},
+      {place:'Dunas de Vhal', text:'Sob a areia, bandidos do deserto emergem em emboscada, panos cobrindo o rosto e adagas em punho.', choices:[
+        {label:'Enfrentar os salteadores', combat:'bandit', goto:2},
+      ]},
+      {place:'Dunas de Vhal', text:'Entre ossos calcinados, um basilisco ergue a cabeça. Seu olhar promete pedra a quem o encarar diretamente.', choices:[
+        {label:'Desviar o olhar e atacar', combat:'basilisk', goto:3},
+      ]},
+      {place:'Dunas de Vhal', text:'O basilisco tomba na areia. Entre seus despojos brilha um anel escarlate — e adiante, as catacumbas aguardam.', choices:[
+        {label:'Recolher o Anel da Fúria e partir', reward:{item:'ring_fury'}, complete:true},
+      ]},
+    ],
+    catacumba:[
+      {place:'Catacumbas de Vhal', text:'Corredores de pedra descem à escuridão. Túmulos de reis esquecidos revestem as paredes, alguns lacrados, outros abertos.', choices:[
+        {label:'Saquear os túmulos', align:-1, reward:{gold:40}, tag:'Ganância', goto:1},
+        {label:'Rezar pelos mortos', align:2, reward:{xp:30}, tag:'Piedade', goto:1},
+      ]},
+      {place:'Catacumbas de Vhal', text:'Os mortos não gostam de visitas. Um esqueleto real desperta, coroa tombada, espada em riste.', choices:[
+        {label:'Enfrentar o guardião', combat:'skeleton', goto:2},
+      ]},
+      {place:'Catacumbas de Vhal', text:'No salão final, um tumular ancião envolto em bruma verde levita sobre seu sarcófago.', choices:[
+        {label:'Enfrentar o tumular', combat:'wight', goto:3},
+      ]},
+      {place:'Catacumbas de Vhal', text:'O último morto retorna ao pó. Sobre o sarcófago repousa um amuleto de olho carmesim — e uma escada sobe rumo à Torre do Necromante.', choices:[
+        {label:'Tomar o Amuleto do Predador', reward:{item:'amulet_crit'}, complete:true},
+      ]},
+    ],
+    torre:[
+      {place:'Torre do Necromante', text:'A torre negra se ergue contra o céu doente. Do interior sopra um frio de sepultura. Um morto-vivo renegado guarda a escadaria.', choices:[
+        {label:'Subir a escadaria', combat:'revenant', goto:1},
+      ]},
+      {place:'Torre do Necromante', text:'No topo, entre velas verdes, Mordrath ergue os braços — os mortos de todo o reino atendem ao seu chamado. — Mais um herói para minha coleção.', speaker:'Mordrath, o Necromante', choices:[
+        {label:'Enfrentar o Necromante', combat:'mordrath', goto:2},
+      ]},
+      {place:'Torre do Necromante', text:'Mordrath se desfaz em cinzas e maldições. Seu domínio quebrado, o caminho para a linha de frente se abre — o Ato II termina, e a guerra verdadeira começa.', choices:[
+        {label:'Marchar para a vanguarda', complete:true},
+      ]},
+    ],
+    ermida:[
+      {place:'Ermida do Oráculo', text:'Uma vidente cega toca sua testa com dedos gelados. — Vejo o Dragão Negro, Kaltharax. E vejo você. Mas não sei se como salvador... ou algoz.', speaker:'Oráculo Cega', choices:[
+        {label:'Pedir poder para a batalha final', align:-1, reward:{spell:'meteor'}, tag:'Ambição', goto:1},
+        {label:'Pedir bênção e sabedoria', align:2, reward:{spell:'holy', heal:'full', xp:30}, tag:'Honra', goto:1},
+      ]},
+      {place:'Ermida do Oráculo', text:'Ela sussurra ao vento: — A Fortaleza Sombria guarda o único caminho até o covil. Vá, mas volte inteiro. O reino inteiro respira em seus pulmões agora.', speaker:'Oráculo Cega', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    desfiladeiro:[
+      {place:'Desfiladeiro Flamejante', text:'Rios de lava serpenteiam entre paredões negros. O calor distorce o ar. Uma frágil ponte de pedra atravessa o abismo.', choices:[
+        {label:'Atravessar a ponte', goto:1},
+      ]},
+      {place:'Desfiladeiro Flamejante', text:'Uma estátua se move: uma gárgula de pedra desdobra as asas e mergulha sobre você, garras de granito à frente.', choices:[
+        {label:'Enfrentar a gárgula', combat:'gargoyle', goto:2},
+      ]},
+      {place:'Desfiladeiro Flamejante', text:'Numa forja profana crepita o Tição Flamejante, guardado por um demônio de chamas. O calor lambe sua pele.', choices:[
+        {label:'Tomar o Tição e enfrentar o demônio', align:-1, reward:{item:'flame_brand'}, tag:'Ambição', combat:'demon', goto:3},
+        {label:'Destruir a forja profana e enfrentá-lo', align:2, reward:{xp:44, item:'ring_aegis'}, tag:'Honra', combat:'demon', goto:3},
+      ]},
+      {place:'Desfiladeiro Flamejante', text:'O demônio se dissolve em brasas. Além do desfiladeiro, os muros da Fortaleza Sombria cortam o horizonte.', choices:[
+        {label:'Retornar ao mapa', complete:true},
+      ]},
+    ],
+    fortaleza:[
+      {place:'Fortaleza Sombria', text:'Portões de ferro rangem ao seu toque. Um soldado das sombras patrulha o corredor de entrada, elmo baixado, lâmina pronta.', choices:[
+        {label:'Forçar a entrada', combat:'dark_soldier', goto:1},
+      ]},
+      {place:'Fortaleza Sombria', text:'No pátio central, Vharok, o General das Sombras, aguarda montado sobre uma pilha de armaduras vazias. — A chave do covil? Terá de arrancá-la do meu cadáver.', speaker:'Vharok, General das Sombras', choices:[
+        {label:'Enfrentar o General', combat:'general', goto:2},
+      ]},
+      {place:'Fortaleza Sombria', text:'Vharok cai de joelhos e a chave é sua. Além do último portão, o ar esquenta e cheira a enxofre. O Covil de Kaltharax aguarda.', choices:[
+        {label:'Rumar ao covil', complete:true},
+      ]},
+    ],
+    covil:[
+      {place:'Covil de Kaltharax', text:'O covil arde em brasas eternas. O Dragão Negro ergue a cabeça, olhos como fornalhas. — Outro herói. Ou outro tolo. Diga-me: vem me matar, ou tomar meu poder?', speaker:'Kaltharax', choices:[
+        {label:'Empunhar a arma e acabar com isto', combat:'dragon', goto:1},
+        {label:'Propor uma trégua — chega de sangue', align:2, tag:'Honra', goto:2},
+      ]},
+      {place:'Covil de Kaltharax', text:'Kaltharax tomba e a montanha estremece até as raízes. Diante do coração ardente do dragão, uma última escolha pesa sobre você.', choices:[
+        {label:'Destruir o coração e libertar o reino', ending:'destroy', tag:'Honra'},
+        {label:'Absorver seu poder — o trono será seu', align:-3, ending:'absorb', tag:'Ambição'},
+      ]},
+      {place:'Covil de Kaltharax', text:'O dragão inclina a colossal cabeça, incrédulo. — Em mil anos, ninguém ousou oferecer paz. Você é tolo... ou o primeiro sábio que conheci.', speaker:'Kaltharax', choices:[
+        {label:'Selar o Pacto Eterno', ending:'pact', tag:'Honra'},
+        {label:'Era uma armadilha — atacar!', align:-2, combat:'dragon', goto:1, tag:'Traição'},
+      ]},
+    ],
+  };
+
+  ENDINGS = {
+    justo:{title:'A Aurora do Rei Justo', text:'Você retorna com as cinzas do dragão ao vento. O reino canta seu nome, e você o governa com a mesma honra que o trouxe até aqui. Eldros conhece, enfim, uma era de ouro.', fx:'ember'},
+    guardiao:{title:'O Guardião Silencioso', text:'Você destrói o coração e desaparece nas montanhas. Nenhuma coroa, nenhuma canção — apenas um mundo mais seguro, e um herói que ninguém jamais conhecerá. Às vezes, basta.', fx:'snow'},
+    tirano:{title:'O Trono de Cinzas', text:'O poder de Kaltharax corre em suas veias, quente e faminto. Você toma o reino pela força. Temem-no como temiam o dragão. Talvez, no fundo, você sempre tenha sido isto.', fx:'ember'},
+    pacto:{title:'O Pacto Eterno', text:'Dragão e mortal firmam uma aliança que redesenha a história. Kaltharax guarda os céus; você, a terra. Uma era de paz improvável começa, escrita por duas mãos inimigas.', fx:'firefly'},
+  };
+
+  OVERLINES = [
+    'A escuridão toma o que restou de sua luz.',
+    'Seu corpo tomba, mas a lenda ainda não terminou.',
+    'O reino chega perto demais da ruína — mas não hoje.',
+  ];
+
+  state = {
+    screen:'title', hasSave:false, player:null, completed:{},
+    loc:null, page:0, combat:null, ending:null, over:null, huntId:null, huntStreak:0,
+    townId:'pedrasola', prevScreen:'town', toast:null, toastId:0, muted:false, talentOptions:null,
+  };
+
+  componentDidMount(){
+    this._lastScreen=this.state.screen; this._lastLevel=this.state.player?this.state.player.level:null; this._lastToastId=this.state.toastId||0;
+    try{ if(localStorage.getItem(this.KEY)) this.setState({hasSave:true}); }catch(e){}
+    try{ if(localStorage.getItem('eldros_mute')==='1') this.setState({muted:true}); }catch(e){}
+    this._unlock=()=>this._unlockAudio();
+    this._unlockEvents=['touchend','touchstart','pointerdown','mousedown','keydown'];
+    this._unlockEvents.forEach(ev=>window.addEventListener(ev, this._unlock, {passive:true}));
+    this._clickSfx=(e)=>{ const t=e.target; const b=(t&&t.closest)?t.closest('button'):null; if(b){ this._unlockAudio(); this.sfx('ui'); } };
+    window.addEventListener('click', this._clickSfx, true);
+  }
+  _unlockAudio(){ const c=this._ensureAudio(); if(!c) return; this._resume(); try{ if(!this._unlocked){ const b=c.createBuffer(1,1,22050); const src=c.createBufferSource(); src.buffer=b; src.connect(this._master||c.destination); src.start(0); this._unlocked=true; } }catch(e){} if(!this.state.muted) this.setAmbient(this.ambientForScreen(this.state.screen)); }
+  componentWillUnmount(){ try{ (this._unlockEvents||[]).forEach(ev=>window.removeEventListener(ev, this._unlock)); window.removeEventListener('click', this._clickSfx, true); clearTimeout(this._tt); if(this._ctx) this._ctx.close(); }catch(e){} }
+  componentDidUpdate(){
+    const s=this.state;
+    if(s.toast && s.toastId!==this._lastToastId){ clearTimeout(this._tt); this._tt=setTimeout(()=>this.setState({toast:null}), 2500); }
+    if(s.screen!==this._lastScreen){
+      if(!s.muted) this.setAmbient(this.ambientForScreen(s.screen));
+      if(s.screen==='map') this._scrollMap(); else this._scrollToTop();
+      if(s.screen==='gameover') this.sfx('defeat');
+    }
+    if(s.player && this._lastLevel!=null && s.player.level>this._lastLevel) this.sfx('levelup');
+    this._lastScreen=s.screen; this._lastLevel=s.player?s.player.level:null; this._lastToastId=s.toastId;
+  }
+  _findScroller(){ let el=document.querySelector('[data-scroll="1"]'); if(el) return el; const list=[...document.querySelectorAll('div')]; for(const d of list){ const s=getComputedStyle(d); if((s.overflowY==='auto'||s.overflowY==='scroll') && d.scrollHeight-d.clientHeight>4) return d; } return document.scrollingElement||document.documentElement; }
+  _scrollMap(){ const act=this.currentAct(); const apply=()=>{ const el=this._findScroller(); if(!el) return; const range=el.scrollHeight-el.clientHeight; if(range<=4){ el.scrollTop=0; return; } let top; if(act>=3) top=0; else if(act===2) top=range*0.30; else top=range; try{ el.scrollTop=top; }catch(e){} }; requestAnimationFrame(()=>requestAnimationFrame(apply)); setTimeout(apply, 130); }
+  _scrollToTop(){ const apply=()=>{ const el=this._findScroller(); if(el){ try{ el.scrollTop=0; }catch(e){} } }; requestAnimationFrame(()=>requestAnimationFrame(apply)); setTimeout(apply, 60); }
+  _ensureAudio(){ if(this._ctx!==undefined) return this._ctx; try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC){ this._ctx=null; return null; } const ctx=new AC(); const m=ctx.createGain(); m.gain.value=this.state.muted?0:0.85; m.connect(ctx.destination); this._ctx=ctx; this._master=m; }catch(e){ this._ctx=null; } return this._ctx; }
+  _resume(){ const c=this._ensureAudio(); if(c && c.state==='suspended'){ try{ const pr=c.resume(); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} } }
+  _noise(){ if(this._nb) return this._nb; const c=this._ctx; const n=Math.floor(c.sampleRate*0.8); const b=c.createBuffer(1,n,c.sampleRate); const d=b.getChannelData(0); for(let i=0;i<n;i++) d[i]=Math.random()*2-1; this._nb=b; return b; }
+  _tone(o){ const c=this._ensureAudio(); if(!c||!this._master) return; const t=c.currentTime+(o.when||0); const osc=c.createOscillator(); osc.type=o.type||'sine'; osc.frequency.setValueAtTime(o.freq,t); if(o.to) osc.frequency.exponentialRampToValueAtTime(Math.max(1,o.to),t+o.dur); if(o.detune) osc.detune.value=o.detune; const g=c.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(Math.max(0.001,o.gain||0.2),t+(o.atk||0.01)); g.gain.exponentialRampToValueAtTime(0.0001,t+o.dur); if(o.filter){ const f=c.createBiquadFilter(); f.type=o.filter; f.frequency.value=o.ff||800; if(o.q)f.Q.value=o.q; osc.connect(f); f.connect(g); } else osc.connect(g); g.connect(this._master); osc.start(t); osc.stop(t+o.dur+0.05); }
+  _noiseHit(o){ const c=this._ensureAudio(); if(!c||!this._master) return; const t=c.currentTime+(o.when||0); const src=c.createBufferSource(); src.buffer=this._noise(); const f=c.createBiquadFilter(); f.type=o.filter||'bandpass'; f.frequency.setValueAtTime(o.freq||1200,t); if(o.to) f.frequency.exponentialRampToValueAtTime(Math.max(60,o.to),t+o.dur); f.Q.value=o.q||1; const g=c.createGain(); g.gain.setValueAtTime(Math.max(0.001,o.gain||0.3),t); g.gain.exponentialRampToValueAtTime(0.0001,t+o.dur); src.connect(f); f.connect(g); g.connect(this._master); src.start(t); src.stop(t+o.dur+0.05); }
+  sfx(name){ if(this.state.muted) return; this._resume(); switch(name){
+    case 'ui': this._tone({type:'triangle',freq:420,to:300,dur:0.07,gain:0.04}); break;
+    case 'confirm': this._tone({type:'sine',freq:523,dur:0.12,gain:0.12}); this._tone({type:'sine',freq:784,dur:0.16,gain:0.09,when:0.09}); break;
+    case 'attack': this._noiseHit({filter:'bandpass',freq:2400,to:400,dur:0.18,gain:0.26,q:0.8}); this._tone({type:'square',freq:150,to:60,dur:0.14,gain:0.1}); break;
+    case 'enemyHit': this._noiseHit({filter:'lowpass',freq:1800,to:200,dur:0.12,gain:0.2}); this._tone({type:'sine',freq:110,to:60,dur:0.12,gain:0.11}); break;
+    case 'crit': this._noiseHit({filter:'bandpass',freq:3200,to:500,dur:0.22,gain:0.3,q:0.7}); this._tone({type:'square',freq:200,to:70,dur:0.2,gain:0.14}); this._tone({type:'sine',freq:1046,dur:0.18,gain:0.09,when:0.02}); break;
+    case 'hurt': this._noiseHit({filter:'lowpass',freq:900,to:120,dur:0.22,gain:0.28}); this._tone({type:'sawtooth',freq:180,to:80,dur:0.2,gain:0.12}); break;
+    case 'fire': this._noiseHit({filter:'lowpass',freq:400,to:2200,dur:0.3,gain:0.22}); this._tone({type:'sawtooth',freq:90,to:200,dur:0.28,gain:0.1}); break;
+    case 'ice': this._tone({type:'triangle',freq:1600,to:2600,dur:0.25,gain:0.1}); this._tone({type:'sine',freq:2400,dur:0.2,gain:0.07,when:0.05}); this._noiseHit({filter:'highpass',freq:4000,dur:0.2,gain:0.09}); break;
+    case 'thunder': this._noiseHit({filter:'lowpass',freq:3000,to:100,dur:0.5,gain:0.36}); this._tone({type:'sawtooth',freq:70,to:40,dur:0.5,gain:0.18}); break;
+    case 'drain': this._tone({type:'sawtooth',freq:320,to:90,dur:0.4,gain:0.12,filter:'lowpass',ff:900}); this._tone({type:'sine',freq:180,to:520,dur:0.35,gain:0.08,when:0.08}); break;
+    case 'holy': [659,880,1319].forEach((f,i)=>this._tone({type:'sine',freq:f,dur:0.5,gain:0.1,when:i*0.05})); this._noiseHit({filter:'highpass',freq:5000,dur:0.3,gain:0.06}); break;
+    case 'ward': [392,523,659].forEach((f,i)=>this._tone({type:'triangle',freq:f,dur:0.4,gain:0.08,when:i*0.06})); break;
+    case 'heal': [523,659,784].forEach((f,i)=>this._tone({type:'sine',freq:f,dur:0.3,gain:0.09,when:i*0.08})); break;
+    case 'coin': this._tone({type:'square',freq:988,dur:0.08,gain:0.07}); this._tone({type:'square',freq:1319,dur:0.1,gain:0.07,when:0.07}); break;
+    case 'levelup': [523,659,784,1046].forEach((f,i)=>this._tone({type:'triangle',freq:f,dur:0.26,gain:0.11,when:i*0.09})); break;
+    case 'victory': [392,523,659,784,1046].forEach((f,i)=>this._tone({type:'sine',freq:f,dur:0.4,gain:0.12,when:i*0.12})); break;
+    case 'combatStart': this._tone({type:'sawtooth',freq:110,to:220,dur:0.5,gain:0.15,filter:'lowpass',ff:900}); this._noiseHit({filter:'bandpass',freq:1600,dur:0.3,gain:0.12,when:0.1}); break;
+    case 'page': this._noiseHit({filter:'highpass',freq:3000,dur:0.12,gain:0.07}); break;
+    case 'door': this._tone({type:'sawtooth',freq:140,to:80,dur:0.3,gain:0.1,filter:'lowpass',ff:600}); break;
+    case 'defeat': [392,330,262,196].forEach((f,i)=>this._tone({type:'sawtooth',freq:f,dur:0.5,gain:0.12,when:i*0.16,filter:'lowpass',ff:1200})); break;
+  } }
+  _combatCues(){ const s=this.state; const c=s.combat; if(s.screen==='gameover') return; if(!c) return; if(c.phase==='victory'){ this.sfx('victory'); setTimeout(()=>{ if(!this.state.muted) this.sfx('coin'); },320); return; } if(c.lastEnemyDmg>0) this.sfx('enemyHit'); if(c.lastPlayerDmg>0) setTimeout(()=>{ if(!this.state.muted) this.sfx('hurt'); },210); }
+  ambientForScreen(sc){ if(sc==='combat') return 'tense'; if(sc==='title'||sc==='gameover') return 'dark'; if(sc==='ending') return 'triumph'; return 'calm'; }
+  setAmbient(kind){ const c=this._ensureAudio(); if(!c||!this._master){ this._ambKind=kind; return; } if(this._ambKind===kind) return; this._ambKind=kind; if(this._amb){ const old=this._amb; try{ old.g.gain.cancelScheduledValues(c.currentTime); old.g.gain.setValueAtTime(old.g.gain.value,c.currentTime); old.g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.8); old.nodes.forEach(n=>{ try{ n.stop(c.currentTime+1); }catch(e){} }); }catch(e){} this._amb=null; } if(!kind) return; const D={ dark:{f:[55,82.4],type:'sine',ff:360,vol:0.05,lfo:0.08}, calm:{f:[110,164.8,220],type:'sine',ff:680,vol:0.04,lfo:0.12}, tense:{f:[65.4,98],type:'sawtooth',ff:480,vol:0.05,lfo:2.4}, triumph:{f:[220,277,330],type:'sine',ff:1100,vol:0.045,lfo:0.1} }; const d=D[kind]; if(!d) return; const g=c.createGain(); g.gain.value=0.0001; const filt=c.createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=d.ff; g.connect(filt); filt.connect(this._master); const nodes=[]; d.f.forEach((fr,i)=>{ const o=c.createOscillator(); o.type=d.type; o.frequency.value=fr; o.detune.value=(i-1)*4; o.connect(g); o.start(); nodes.push(o); }); const lfo=c.createOscillator(); lfo.frequency.value=d.lfo; const lg=c.createGain(); lg.gain.value=d.vol*0.5; lfo.connect(lg); lg.connect(g.gain); lfo.start(); nodes.push(lfo); g.gain.setValueAtTime(0.0001,c.currentTime); g.gain.exponentialRampToValueAtTime(d.vol,c.currentTime+1.2); this._amb={g,nodes}; }
+  toggleMute(){ const m=!this.state.muted; try{ localStorage.setItem('eldros_mute', m?'1':'0'); }catch(e){} this.setState({muted:m}); const c=this._ensureAudio(); if(c&&this._master){ this._resume(); try{ this._master.gain.setTargetAtTime(m?0:0.85, c.currentTime, 0.05); }catch(e){} } if(!m){ this._ambKind=null; this.setAmbient(this.ambientForScreen(this.state.screen)); } }
+
+  cp(o){ return JSON.parse(JSON.stringify(o)); }
+  rnd(a,b){ return a+Math.floor(Math.random()*(b-a+1)); }
+  mem(k,fn){ this._m=this._m||{}; if(!(k in this._m)) this._m[k]=fn(); return this._m[k]; }
+  mutate(fn){ this.setState(fn, ()=>this.save()); }
+  flashState(ret, msg){ if(msg){ ret.toast=msg; ret.toastId=(this.state.toastId||0)+1; } return ret; }
+  diffMul(){ const d=this.props.difficulty||'Normal'; if(d==='Fácil')return{hp:.8,atk:.8}; if(d==='Difícil')return{hp:1.3,atk:1.25}; return{hp:1,atk:1}; }
+  makeEnemy(id){ const e=this.ENEMIES[id]; const m=this.diffMul(); const hp=Math.round(e.hp*m.hp); return {...e, id, hp, maxHp:hp, atk:Math.max(2,Math.round(e.atk*m.atk))}; }
+  makeHuntEnemy(hid){ const H=this.HUNTS[hid]; const id=H.pool[this.rnd(0,H.pool.length-1)]; const e=this.makeEnemy(id); const p=this.state.player; const over=Math.max(0,(p?p.level:1)-H.lvl[0]); const f=1+over*0.10; e.hp=Math.round(e.hp*f); e.maxHp=e.hp; e.atk=Math.max(2,Math.round(e.atk*(1+over*0.06))); e.xp=Math.round(e.xp*(1+over*0.12)); e.gold=Math.round(e.gold*(1+over*0.05)); e.hunt=true; return e; }
+
+  effStats(p){
+    const w=this.ITEMS[p.weapon]||{}, a=this.ITEMS[p.armor]||{}, r=(p.relic&&this.ITEMS[p.relic])||{};
+    const tal=p.talents||[]; const tb={atk:0,def:0,maxHp:0,maxMp:0,crit:0,spellPow:0};
+    tal.forEach(id=>{ const t=this.TALENTS[id]; if(t&&t.bonus){ for(const k in t.bonus) tb[k]=(tb[k]||0)+t.bonus[k]; } });
+    const baseCrit=(this.CLASSES[p.classId]?this.CLASSES[p.classId].crit:0.15);
+    return {
+      atk:p.atk+(w.atk||0)+(r.atk||0)+tb.atk,
+      def:p.def+(a.def||0)+(r.def||0)+tb.def,
+      maxHp:p.maxHp+(a.maxHp||0)+(r.maxHp||0)+tb.maxHp,
+      maxMp:p.maxMp+(a.maxMp||0)+(r.maxMp||0)+tb.maxMp,
+      crit:Math.min(0.85, baseCrit+(w.crit||0)+(r.crit||0)+tb.crit),
+      spellPow:(r.spellPow||0)+tb.spellPow,
+    };
+  }
+  hasTalent(p,id){ return !!(p&&p.talents&&p.talents.includes(id)); }
+  spellCost(p,sp){ let c=sp.cost; if(this.hasTalent(p,'t_thrift')) c=Math.round(c*0.8); return Math.max(1,c); }
+  applyDmgMods(p,enemy,dmg){ const eff=this.effStats(p); if(this.hasTalent(p,'t_berserk') && p.hp/eff.maxHp<0.3) dmg=Math.round(dmg*1.3); if(this.hasTalent(p,'t_executioner') && enemy.hp/enemy.maxHp<0.25) dmg=Math.round(dmg*1.45); return dmg; }
+  spellDamage(p,sp,enemy){ const eff=this.effStats(p); let dmg=sp.dmg+Math.floor(p.level*1.4)+(p.classId==='mago'?Math.floor(eff.maxMp/5):0)+this.rnd(0,4); dmg=Math.round(dmg*(1+(eff.spellPow||0))); dmg=this.applyDmgMods(p,enemy,dmg); if(sp.holy && enemy && enemy.undead) dmg*=2; return dmg; }
+  _acquire(p,id){ const it=this.ITEMS[id]; if(!it) return; if(it.kind==='consum'){ p.inv[id]=(p.inv[id]||0)+1; return; } p.inv[id]=(p.inv[id]||0)+1; const slot=it.kind==='weapon'?'weapon':it.kind==='armor'?'armor':'relic'; const cur=p[slot]; const better = !cur ? true : (it.kind==='relic' ? false : ((this.ITEMS[cur].tier||0)<(it.tier||0))); if(better){ p.inv[id]--; if(p.inv[id]<=0) delete p.inv[id]; if(cur){ const ci=this.ITEMS[cur]; if(!(ci&&ci.tier===0)) p.inv[cur]=(p.inv[cur]||0)+1; } p[slot]=id; } }
+  rollTalents(p){ const owned=new Set(p.talents||[]); const avail=Object.keys(this.TALENTS).filter(k=>!owned.has(k)); for(let i=avail.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=avail[i]; avail[i]=avail[j]; avail[j]=t; } return avail.slice(0,3); }
+  _talentGate(next){ const p=next.player||this.state.player; if(p && (p.pendingTalents||0)>0 && ['map','town','scene','hunt'].includes(next.screen)){ this._talentReturn={...next}; return {...next, screen:'talent', talentOptions:this.rollTalents(p)}; } return next; }
+  currentAct(){ const c=this.state.completed||{}; if(c.torre) return 3; if(c.toca) return 2; return 1; }
+
+  save(){
+    try{ const s=this.state;
+      if(!s.player || s.screen==='gameover' || s.screen==='ending'){ localStorage.removeItem(this.KEY); return; }
+      const screen=['town','map','hunt'].includes(s.screen)?(s.screen==='hunt'?'map':s.screen):'map';
+      localStorage.setItem(this.KEY, JSON.stringify({player:s.player, completed:s.completed, screen, townId:s.townId}));
+    }catch(e){}
+  }
+
+  onNew(){ this.setState({screen:'class'}); }
+  onContinue(){ this.sfx('confirm'); try{ const d=JSON.parse(localStorage.getItem(this.KEY)); if(!d)return; const p=d.player; p.talents=p.talents||[]; p.pendingTalents=p.pendingTalents||0; if(!('relic' in p)) p.relic=null; if(!p.inv) p.inv={}; this.setState({player:p, completed:d.completed||{}, screen:d.screen||'map', townId:d.townId||'pedrasola', loc:null, page:0, combat:null, ending:null, over:null, huntId:null}); }catch(e){} }
+  onRestart(){ try{localStorage.removeItem(this.KEY);}catch(e){} this.setState({screen:'title', hasSave:false, player:null, completed:{}, loc:null, page:0, combat:null, ending:null, over:null, huntId:null, townId:'pedrasola'}); }
+  onRevive(){ this.mutate(s=>{ const p=this.cp(s.player); const eff=this.effStats(p); p.hp=eff.maxHp; p.mp=eff.maxMp; return {player:p, screen:'town', combat:null, over:null, loc:null, huntId:null}; }); }
+
+  chooseClass(id){
+    this.sfx('confirm');
+    const c=this.CLASSES[id];
+    const player={ classId:id, className:c.name, level:1, xp:0, xpNext:32, hp:c.hp, maxHp:c.hp, mp:c.mp, maxMp:c.mp, atk:c.atk, def:c.def, gold:24, align:0, spells:[...c.spells], inv:{potion:3, ether:1}, weapon:'iron_sword', armor:'leather', relic:null, talents:[], pendingTalents:0 };
+    this.mutate(s=>({player, completed:{}, screen:'town', townId:'pedrasola', loc:null, page:0, combat:null, ending:null, over:null, huntId:null}));
+  }
+
+  unlocked(){ const c=this.state.completed||{}; const u={};
+    u.vila=true; u.floresta=true; u.montanha=true;
+    u.ruinas=!!c.floresta; u.cacadaI=!!(c.floresta||c.montanha); u.toca=!!(c.ruinas&&c.montanha);
+    const a1=!!c.toca; u.porto=a1; u.pantano=a1; u.caverna=a1;
+    u.deserto=!!c.pantano; u.cacadaII=!!c.caverna; u.catacumba=!!(c.deserto&&c.caverna); u.torre=!!c.catacumba;
+    const a2=!!c.torre; u.acampamento=a2; u.ermida=a2; u.desfiladeiro=a2;
+    u.cacadaIII=!!c.ermida; u.fortaleza=!!(c.desfiladeiro&&c.ermida); u.covil=!!c.fortaleza;
+    return u;
+  }
+
+  openNode(id){ const L=this.LOCS[id]; if(!this.unlocked()[id]){ this.setState(x=>this.flashState({},'Este caminho ainda está bloqueado.')); return; }
+    if(L.type==='town'){ this.sfx('door'); this.setState({townId:L.town, screen:'town'}); return; }
+    if(L.type==='hunt'){ this.sfx('door'); this.setState({loc:id, huntId:L.hunt, huntStreak:0, screen:'hunt'}); return; }
+    this.sfx('page'); this.mutate(s=>({loc:id, page:0, screen:'scene'}));
+  }
+  onGotoTown(){ const u=this.unlocked(); let t='pedrasola'; if(u.porto)t='porto'; if(u.acampamento)t='acampamento'; this.setState({townId:t, screen:'town'}); }
+
+  huntStart(){ this.sfx('combatStart'); this.mutate(s=>{ const enemy=this.makeHuntEnemy(s.huntId); const after={hunt:s.huntId, node:s.loc}; return {screen:'combat', combat:{enemy, after, locId:s.loc, menu:'root', phase:'player', log:['Uma presa surge: '+enemy.name+'!'], animN:0, lastKind:'', lastEnemyDmg:0, lastPlayerDmg:0, crit:false, ward:0}}; }); }
+
+  grantXp(p, xp, msgs){
+    p.xp+=xp;
+    while(p.level<this.LEVEL_CAP && p.xp>=p.xpNext){
+      p.xp-=p.xpNext; p.level++; p.maxHp+=9; p.maxMp+=4; p.atk+=2; p.def+=1;
+      const eff=this.effStats(p); p.hp=eff.maxHp; p.mp=eff.maxMp;
+      msgs.push('Subiu ao nível '+p.level+'!');
+      const learn=this.LEVEL_SPELLS[p.level]; if(learn && !p.spells.includes(learn)){ p.spells.push(learn); msgs.push('Aprendeu '+this.SPELLS[learn].name+'!'); }
+      if(this.TALENT_LEVELS.indexOf(p.level)>=0){ p.pendingTalents=(p.pendingTalents||0)+1; msgs.push('Novo talento disponível!'); }
+      p.xpNext=Math.round(p.xpNext*1.3);
+    }
+    if(p.level>=this.LEVEL_CAP && p.xp>p.xpNext) p.xp=p.xpNext;
+  }
+  applyReward(p, r){
+    const msgs=[];
+    if(r.gold){ p.gold=Math.max(0, p.gold+r.gold); msgs.push((r.gold>0?'+':'')+r.gold+' ouro'); }
+    if(r.xp){ this.grantXp(p, r.xp, msgs); msgs.unshift('+'+r.xp+' XP'); }
+    if(r.item){ const it=this.ITEMS[r.item]; this._acquire(p, r.item); msgs.push('Obteve '+it.name); }
+    if(r.spell){ if(!p.spells.includes(r.spell)){ p.spells.push(r.spell); msgs.push('Aprendeu '+this.SPELLS[r.spell].name); } }
+    if(r.heal==='full'){ const eff=this.effStats(p); p.hp=eff.maxHp; p.mp=eff.maxMp; msgs.push('Vida e mana restauradas'); }
+    return msgs;
+  }
+
+  chooseSceneOption(ci){
+    const _s=this.state; const _ch=this.SCENES[_s.loc][_s.page].choices[ci];
+    if(_ch.combat) this.sfx('combatStart'); else if(_ch.complete) this.sfx('door'); else this.sfx('page');
+    if(_ch.reward){ if(_ch.reward.item||_ch.reward.spell) this.sfx('confirm'); else if(_ch.reward.gold>0) this.sfx('coin'); }
+    this.mutate(s=>{
+      const ch=this.SCENES[s.loc][s.page].choices[ci];
+      const p=this.cp(s.player); let msgs=[];
+      if(ch.align) p.align+=ch.align;
+      if(ch.reward) msgs=this.applyReward(p, ch.reward);
+      if(ch.combat){
+        const enemy=this.makeEnemy(ch.combat);
+        const after={loc:s.loc, page:ch.goto};
+        return this.flashState({player:p, screen:'combat', combat:{enemy, after, locId:s.loc, menu:'root', phase:'player', log:[enemy.name+' surge diante de você!'], animN:0, lastKind:'', lastEnemyDmg:0, lastPlayerDmg:0, crit:false, ward:0}}, msgs.join('   ·   '));
+      }
+      if(ch.ending){ return {player:p, screen:'ending', ending:this.pickEnding(ch.ending, p)}; }
+      if(ch.complete){ const completed={...s.completed}; completed[s.loc]=true; return this.flashState(this._talentGate({player:p, completed, screen:'map', loc:null}), msgs.join('   ·   ')); }
+      return this.flashState(this._talentGate({player:p, page:ch.goto, screen:'scene'}), msgs.join('   ·   '));
+    });
+  }
+  pickEnding(tag, p){ if(tag==='destroy') return p.align>=2?'justo':'guardiao'; if(tag==='absorb') return 'tirano'; if(tag==='pact') return 'pacto'; return 'guardiao'; }
+
+  resolve(opts){
+    this.setState(s=>{
+      const p=this.cp(s.player); const eff=this.effStats(p);
+      const c={...s.combat, enemy:{...s.combat.enemy}, log:[...s.combat.log]};
+      const log=opts.log||[];
+      c.animN=(c.animN||0)+1; c.lastKind=opts.kind||'attack'; c.lastEnemyDmg=opts.dmgToEnemy||0; c.lastPlayerDmg=0; c.crit=!!opts.crit; c.menu='root';
+      if(opts.ward) c.ward=Math.max(c.ward||0, opts.ward);
+      if(opts.mpCost) p.mp=Math.max(0, p.mp-opts.mpCost);
+      if(opts.heal) p.hp=Math.min(eff.maxHp, p.hp+opts.heal);
+      if(opts.restoreMp) p.mp=Math.min(eff.maxMp, p.mp+opts.restoreMp);
+      if(opts.consume){ p.inv[opts.consume]=Math.max(0,(p.inv[opts.consume]||0)-1); if(p.inv[opts.consume]===0) delete p.inv[opts.consume]; }
+      log.forEach(l=>c.log.push(l));
+      if(opts.fled){ return {player:p, combat:null, screen:'map'}; }
+      if(opts.dmgToEnemy){ c.enemy.hp=Math.max(0, c.enemy.hp-opts.dmgToEnemy); }
+      if(c.enemy.hp<=0){
+        const msgs=[]; p.gold+=c.enemy.gold; this.grantXp(p, c.enemy.xp, msgs);
+        c.log.push('— '+c.enemy.name+' foi derrotado! —'); c.log.push('+'+c.enemy.xp+' XP, +'+c.enemy.gold+' ouro.');
+        if(c.enemy.drop && this.ITEMS[c.enemy.drop]){ const d=this.ITEMS[c.enemy.drop]; if(d.kind==='consum'){ p.inv[c.enemy.drop]=(p.inv[c.enemy.drop]||0)+1; c.log.push('Encontrou '+d.name+'.'); } else if(!c.enemy.hunt){ this._acquire(p, c.enemy.drop); c.log.push('Saque raro: '+d.name+'!'); } }
+        msgs.forEach(m=>c.log.push(m)); c.phase='victory';
+        const e2=this.effStats(p); p.hp=Math.min(p.hp,e2.maxHp); p.mp=Math.min(p.mp,e2.maxMp);
+        return {player:p, combat:c};
+      }
+      let ed=Math.max(2, c.enemy.atk + this.rnd(0,4) - eff.def);
+      if(c.ward>0){ ed=Math.round(ed*0.5); c.ward--; c.log.push('O escudo arcano absorve parte do golpe.'); }
+      p.hp=Math.max(0, p.hp-ed); c.lastPlayerDmg=ed;
+      c.log.push(c.enemy.name+' contra-ataca: '+ed+' de dano.');
+      if(p.hp<=0){ return {player:p, combat:c, screen:'gameover', over:this.OVERLINES[this.rnd(0,this.OVERLINES.length-1)]}; }
+      if(this.hasTalent(p,'t_regen')){ const r=Math.round(eff.maxHp*0.05); if(r>0 && p.hp<eff.maxHp){ p.hp=Math.min(eff.maxHp,p.hp+r); c.log.push('Regeneração: +'+r+' de vida.'); } }
+      return {player:p, combat:c};
+    }, ()=>{ this.save(); this._combatCues(); });
+  }
+
+  cbAttack(){ const p=this.state.player, c=this.state.combat; if(!c||c.phase!=='player') return; const eff=this.effStats(p); const crit=Math.random()<eff.crit; let dmg=eff.atk+this.rnd(0,5); dmg=this.applyDmgMods(p,c.enemy,dmg); if(crit) dmg=Math.round(dmg*1.75); this.sfx(crit?'crit':'attack'); const opts={kind:'attack', dmgToEnemy:dmg, crit, log:[(crit?'Golpe crítico! ':'Você ataca. ')+dmg+' de dano.']}; if(this.hasTalent(p,'t_lifedrain')) opts.heal=(opts.heal||0)+Math.max(1,Math.round(dmg*0.15)); if(this.hasTalent(p,'t_manaburn')) opts.restoreMp=(opts.restoreMp||0)+3; this.resolve(opts); }
+  cbSpell(id){ const p=this.state.player, c=this.state.combat; if(!c||c.phase!=='player') return; const sp=this.SPELLS[id]; const cost=this.spellCost(p,sp); if(p.mp<cost){ this.setState(s=>this.flashState({}, 'Mana insuficiente.')); return; }
+    const scmap={fire:'fire',ice:'ice',thunder:'thunder',heal:'heal',drain:'drain',holy:'holy',ward:'ward'}; this.sfx(scmap[sp.kind]||'fire');
+    if(sp.dmg){ const dmg=this.spellDamage(p, sp, c.enemy); const dh=sp.drain?Math.round(dmg*sp.drain):0; this.resolve({kind:sp.kind, mpCost:cost, dmgToEnemy:dmg, heal:dh, log:[sp.name+'! '+dmg+' de dano'+(dh?', dreno de '+dh:'')+'.']}); }
+    else if(sp.heal){ this.resolve({kind:sp.kind, mpCost:cost, heal:sp.heal, log:[sp.name+'. +'+sp.heal+' de vida.']}); }
+    else if(sp.ward){ this.resolve({kind:'ward', mpCost:cost, ward:sp.ward, log:['Escudo Arcano envolve você por '+sp.ward+' turnos.']}); }
+  }
+  cbItem(id){ const p=this.state.player, c=this.state.combat; if(!c||c.phase!=='player'||!p.inv[id]) return; const it=this.ITEMS[id]; this.sfx('heal'); if(it.use==='heal') this.resolve({kind:'heal', heal:it.val, consume:id, log:['Você usa '+it.name+'. +'+it.val+' de vida.']}); else if(it.use==='mana') this.resolve({kind:'heal', restoreMp:it.val, consume:id, log:['Você usa '+it.name+'. +'+it.val+' de mana.']}); else if(it.use==='full') this.resolve({kind:'heal', heal:9999, restoreMp:9999, consume:id, log:['Você usa '+it.name+'. Vida e mana restauradas.']}); }
+  cbFlee(){ const c=this.state.combat; if(!c||c.phase!=='player') return; this.sfx('page'); if(c.enemy.boss){ this.resolve({kind:'attack', log:['Não há fuga deste combate!']}); return; } const chance=this.state.player.classId==='ladino'?0.8:0.55; if(Math.random()<chance) this.resolve({fled:true, log:['Você escapa para o mapa.']}); else this.resolve({kind:'attack', log:['A fuga falhou!']}); }
+  cbMenu(m){ this.setState(s=>({combat:{...s.combat, menu:m}})); }
+  resolveAfter(){ this.sfx('page'); const a=this.state.combat.after; this.mutate(s=>{ if(a&&a.ending) return {combat:null, screen:'ending', ending:this.pickEnding(a.ending, s.player)}; if(a&&a.hunt) return this._talentGate({combat:null, screen:'hunt', loc:a.node, huntId:a.hunt, huntStreak:(s.huntStreak||0)+1}); return this._talentGate({combat:null, screen:'scene', loc:a.loc, page:a.page}); }); }
+
+  pickTalent(id){ this.sfx('confirm'); this.mutate(s=>{ const p=this.cp(s.player); p.talents=p.talents||[]; if(!p.talents.includes(id)) p.talents.push(id); p.pendingTalents=Math.max(0,(p.pendingTalents||0)-1); const eff=this.effStats(p); p.hp=Math.min(eff.maxHp, p.hp+0); if(p.pendingTalents>0){ return {player:p, screen:'talent', talentOptions:this.rollTalents(p)}; } const back=this._talentReturn||{screen:'map'}; this._talentReturn=null; return {player:p, screen:back.screen||'map', loc:(back.loc!==undefined?back.loc:s.loc), page:(back.page!==undefined?back.page:s.page), completed:(back.completed||s.completed), huntId:(back.huntId!==undefined?back.huntId:s.huntId)}; }); }
+
+  townRest(){ this.sfx('heal'); this.mutate(s=>{ const p=this.cp(s.player); const eff=this.effStats(p); p.hp=eff.maxHp; p.mp=eff.maxMp; return this.flashState({player:p}, 'Descansou. Vida e mana restauradas.'); }); }
+  openShop(){ this.setState(s=>({prevScreen:'town', screen:'shop'})); }
+  townElder(){ const line=(this.TOWNS[this.state.townId]||this.TOWNS.pedrasola).npcLine; this.setState(s=>this.flashState({}, line)); }
+  townMap(){ this.setState({screen:'map'}); }
+  buy(id){ const bp=this.state.player; const price=this.ITEMS[id].price||0; this.sfx(bp&&bp.gold>=price?'coin':'ui'); this.mutate(s=>{ const it=this.ITEMS[id]; const p=this.cp(s.player); if(p.gold<(it.price||0)) return this.flashState({}, 'Ouro insuficiente.'); p.gold-=it.price; this._acquire(p, id); const eff=this.effStats(p); p.hp=Math.min(p.hp,eff.maxHp); p.mp=Math.min(p.mp,eff.maxMp); return this.flashState({player:p}, 'Comprou '+it.name+'.'); }); }
+  onOpenInv(){ this.setState(s=>({prevScreen:s.screen, screen:'inventory'})); }
+  onOpenChar(){ this.setState(s=>({prevScreen:s.screen, screen:'character'})); }
+  onCloseOverlay(){ this.setState(s=>({screen:s.prevScreen||'map'})); }
+  useItemField(id){ this.mutate(s=>{ const it=this.ITEMS[id]; const p=this.cp(s.player); if(!p.inv[id]) return {}; const eff=this.effStats(p); if(it.use==='heal'){ if(p.hp>=eff.maxHp) return this.flashState({}, 'Vida já está cheia.'); p.hp=Math.min(eff.maxHp,p.hp+it.val); } else if(it.use==='mana'){ if(p.mp>=eff.maxMp) return this.flashState({}, 'Mana já está cheia.'); p.mp=Math.min(eff.maxMp,p.mp+it.val); } else if(it.use==='full'){ p.hp=eff.maxHp; p.mp=eff.maxMp; } p.inv[id]--; if(p.inv[id]<=0) delete p.inv[id]; return this.flashState({player:p}, 'Usou '+it.name+'.'); }); }
+  equipItem(id){ this.mutate(s=>{ const it=this.ITEMS[id]; const p=this.cp(s.player); if(!p.inv[id]) return {}; const slot=it.kind==='weapon'?'weapon':it.kind==='armor'?'armor':'relic'; const cur=p[slot]; p.inv[id]--; if(p.inv[id]<=0) delete p.inv[id]; if(cur){ const ci=this.ITEMS[cur]; if(!(ci&&ci.tier===0)) p.inv[cur]=(p.inv[cur]||0)+1; } p[slot]=id; const eff=this.effStats(p); p.hp=Math.min(p.hp,eff.maxHp); p.mp=Math.min(p.mp,eff.maxMp); return this.flashState({player:p}, 'Equipou '+it.name+'.'); }); }
+
+  // ============ VISUAL BUILDERS ============
+  _particles(kind, count){
+    const h=React.createElement;
+    const arr=this.mem('p_'+kind+'_'+count, ()=>Array.from({length:count},()=>({x:Math.random()*100, y:Math.random()*100, d:5+Math.random()*8, dl:Math.random()*8, s:2+Math.random()*3.5})));
+    const M={ember:{a:'emberRise', bg:'radial-gradient(circle,#ffd98a,#e0642a)', g:'#ff9a4a', from:'bottom'},
+      snow:{a:'snowFall', bg:'#e6eef7', g:'#ffffff', from:'top'},
+      firefly:{a:'wispFloat', bg:'#c8e88a', g:'#9ad06a', from:'mid'},
+      wisp:{a:'wispFloat', bg:'#7ce0d0', g:'#4fd1c5', from:'mid'},
+      dust:{a:'dustDrift', bg:'#c9a86a', g:'#8a7238', from:'mid'}};
+    const c=M[kind]||M.dust;
+    return h('div',{style:{position:'absolute',inset:0,overflow:'hidden',pointerEvents:'none'}}, arr.map((p,i)=>{
+      const pos = c.from==='bottom'?{left:p.x+'%',bottom:'-6px'} : c.from==='top'?{left:p.x+'%',top:'-8px'} : {left:p.x+'%',top:p.y+'%'};
+      return h('span',{key:i,style:{position:'absolute',...pos,width:p.s+'px',height:p.s+'px',borderRadius:'50%',background:c.bg,boxShadow:'0 0 '+(p.s*2.4)+'px '+c.g,opacity:0,animation:c.a+' '+p.d+'s linear '+p.dl+'s infinite'}});
+    }));
+  }
+
+  _shapes(kind){
+    return this.mem('sil_'+kind, ()=>{
+      const R=(a,b)=>a+Math.random()*(b-a); const out=[];
+      if(kind==='trees'){ for(let i=0;i<18;i++) out.push({t:'tri', w:R(14,26), h:R(26,66), mo:R(-4,2)}); }
+      else if(kind==='peaks'){ for(let i=0;i<5;i++) out.push({t:'tri', w:R(78,150), h:R(70,140), mo:R(-40,-18)}); }
+      else if(kind==='ruins'){ for(let i=0;i<13;i++){ const broken=Math.random()<0.4; out.push({t:'rect', w:R(16,30), h:broken?R(10,26):R(34,82), mo:R(-2,10)}); } }
+      else if(kind==='swamp'){ for(let i=0;i<8;i++) out.push({t:'hump', w:R(44,92), h:R(14,30), mo:R(-14,-4)}); }
+      else if(kind==='fortress'){ for(let i=0;i<15;i++){ const tower=(i%5===0); out.push({t:'rect', w:tower?26:16, h:tower?R(64,86):(i%2?42:28), mo:R(-1,3)}); } }
+      else if(kind==='lair'){ for(let i=0;i<12;i++) out.push({t:'spike', w:R(16,34), h:R(30,84), mo:R(-3,4)}); }
+      else if(kind==='town'){ for(let i=0;i<11;i++){ out.push({t:'house', w:R(26,44), h:R(30,54), mo:R(-1,5), roof:R(10,18)}); } }
+      else if(kind==='dunes'){ for(let i=0;i<6;i++) out.push({t:'hump', w:R(60,120), h:R(16,34), mo:R(-24,-6)}); }
+      else if(kind==='crypt'){ for(let i=0;i<14;i++) out.push({t:'tomb', w:R(12,22), h:R(20,46), mo:R(-1,6)}); }
+      else { for(let i=0;i<10;i++) out.push({t:'tri', w:R(20,40), h:R(30,70), mo:R(-6,2)}); }
+      return out;
+    });
+  }
+  _silRow(kind, color, H){
+    const h=React.createElement; const shapes=this._shapes(kind);
+    return h('div',{style:{position:'absolute',bottom:'8px',left:'-6%',right:'-6%',height:H*0.56,display:'flex',alignItems:'flex-end',justifyContent:'center'}},
+      shapes.map((sh,i)=>{
+        const base={width:sh.w+'px',height:sh.h+'px',background:color,marginLeft:sh.mo+'px',flex:'none'};
+        if(sh.t==='tri'||sh.t==='spike') base.clipPath='polygon(50% 0,0 100%,100% 100%)';
+        else if(sh.t==='hump') base.borderRadius='50% 50% 0 0';
+        else if(sh.t==='tomb') base.borderRadius='45% 45% 0 0';
+        else if(sh.t==='house'){ return h('div',{key:i,style:{position:'relative',width:sh.w+'px',height:sh.h+'px',marginLeft:sh.mo+'px',flex:'none'}},[
+          h('div',{key:'r',style:{width:0,height:0,margin:'0 auto',borderLeft:(sh.w/2)+'px solid transparent',borderRight:(sh.w/2)+'px solid transparent',borderBottom:sh.roof+'px solid '+color}}),
+          h('div',{key:'b',style:{width:sh.w+'px',height:(sh.h-sh.roof)+'px',background:color}})]); }
+        return h('div',{key:i,style:base});
+      }));
+  }
+  _envBanner(loc, H){
+    const h=React.createElement; const cfg=this.LOCFX[loc]||this.LOCFX.covil;
+    return h('div',{style:{position:'absolute',inset:0,background:'linear-gradient(180deg,'+cfg.sky[0]+' 0%,'+cfg.sky[1]+' 100%)',overflow:'hidden'}},[
+      h('div',{key:'glow',style:{position:'absolute',top:'12%',left:'68%',width:'78px',height:'78px',borderRadius:'50%',background:'radial-gradient(circle,'+cfg.accent+'55,transparent 70%)',filter:'blur(3px)'}}),
+      h('div',{key:'hill',style:{position:'absolute',bottom:'6px',left:'-8%',right:'-8%',height:(H*0.34)+'px',background:cfg.sky[1],opacity:.75,borderRadius:'50% 50% 0 0/100% 100% 0 0'}}),
+      this._silRow(cfg.sil, '#0a0705', H),
+      this._particles(cfg.part, 15),
+      h('div',{key:'gr',style:{position:'absolute',bottom:0,left:0,right:0,height:'8px',background:'#080604'}}),
+      h('div',{key:'vg',style:{position:'absolute',inset:0,boxShadow:'inset 0 0 54px 14px rgba(0,0,0,.72)',pointerEvents:'none'}}),
+    ]);
+  }
+
+  _creature(id, scale){
+    const h=React.createElement; const cfg=this.CRE[id]||this.CRE.wolf; const S=Math.round(cfg.size*(scale||1));
+    const kids=[]; const eye=(x,k)=>h('div',{key:k||('e'+x),style:{position:'absolute',top:'42%',left:x+'%',width:S*0.11+'px',height:S*0.13+'px',borderRadius:'50%',background:cfg.eye,boxShadow:'0 0 '+S*0.12+'px '+cfg.eye,animation:'eyeGlow 2.4s ease-in-out infinite',transform:'translateX(-50%)'}});
+    if(cfg.feat==='dragon'){
+      kids.push(h('div',{key:'wl',style:{position:'absolute',top:'8%',left:'-18%',width:S*0.6+'px',height:S*0.7+'px',background:'linear-gradient(160deg,'+cfg.body+','+cfg.dark+')',clipPath:'polygon(100% 0,0 40%,60% 100%,100% 70%)',transformOrigin:'100% 30%','--r':'-8deg','--d':'10deg',animation:'wingBeat 3.2s ease-in-out infinite',opacity:.92}}));
+      kids.push(h('div',{key:'wr',style:{position:'absolute',top:'8%',right:'-18%',width:S*0.6+'px',height:S*0.7+'px',background:'linear-gradient(200deg,'+cfg.body+','+cfg.dark+')',clipPath:'polygon(0 0,100% 40%,40% 100%,0 70%)',transformOrigin:'0% 30%','--r':'8deg','--d':'-10deg',animation:'wingBeat 3.2s ease-in-out infinite',opacity:.92}}));
+    }
+    if(cfg.wings==='small'){
+      kids.push(h('div',{key:'swl',style:{position:'absolute',top:'16%',left:'-8%',width:S*0.44+'px',height:S*0.5+'px',background:'linear-gradient(160deg,'+cfg.body+','+cfg.dark+')',clipPath:'polygon(100% 0,0 45%,55% 100%,100% 75%)',transformOrigin:'100% 30%','--r':'-6deg','--d':'8deg',animation:'wingBeat 2.6s ease-in-out infinite',opacity:.85}}));
+      kids.push(h('div',{key:'swr',style:{position:'absolute',top:'16%',right:'-8%',width:S*0.44+'px',height:S*0.5+'px',background:'linear-gradient(200deg,'+cfg.body+','+cfg.dark+')',clipPath:'polygon(0 0,100% 45%,45% 100%,0 75%)',transformOrigin:'0% 30%','--r':'6deg','--d':'-8deg',animation:'wingBeat 2.6s ease-in-out infinite',opacity:.85}}));
+    }
+    if(cfg.feat==='spider'){ for(let i=0;i<3;i++){ const t=30+i*15; kids.push(h('div',{key:'lgl'+i,style:{position:'absolute',top:t+'%',left:'4%',width:S*0.42+'px',height:'3px',background:cfg.dark,transformOrigin:'right center',transform:'rotate('+(20-i*18)+'deg)'}})); kids.push(h('div',{key:'lgr'+i,style:{position:'absolute',top:t+'%',right:'4%',width:S*0.42+'px',height:'3px',background:cfg.dark,transformOrigin:'left center',transform:'rotate('+(-20+i*18)+'deg)'}})); } }
+    const bodyStyle={position:'absolute',left:'50%',top:'52%',transform:'translate(-50%,-50%)',width:S*0.74+'px',height:S*0.8+'px',background:'radial-gradient(circle at 38% 30%,'+cfg.body+','+cfg.dark+' 78%)',boxShadow:'0 0 '+S*0.2+'px '+cfg.dark,animation:'breathe 3s ease-in-out infinite'};
+    if(cfg.feat==='jag') bodyStyle.clipPath='polygon(18% 0,82% 0,100% 66%,88% 100%,66% 82%,50% 100%,34% 82%,12% 100%,0 66%)';
+    else if(cfg.feat==='wisp') bodyStyle.clipPath='polygon(20% 0,80% 0,100% 52%,72% 92%,50% 74%,28% 92%,0 52%)';
+    else if(cfg.feat==='spider') bodyStyle.borderRadius='50%';
+    else bodyStyle.borderRadius='48% 48% 42% 42%/54% 54% 42% 42%';
+    const bodyKids=[eye(40),eye(60)];
+    if(cfg.feat==='spider'){ bodyKids.push(eye(30,'e30'),eye(70,'e70')); bodyKids.push(h('div',{key:'e34',style:{position:'absolute',top:'30%',left:'36%',width:S*0.06+'px',height:S*0.06+'px',borderRadius:'50%',background:cfg.eye,transform:'translateX(-50%)'}}),h('div',{key:'e64',style:{position:'absolute',top:'30%',left:'64%',width:S*0.06+'px',height:S*0.06+'px',borderRadius:'50%',background:cfg.eye,transform:'translateX(-50%)'}})); }
+    if(cfg.feat==='ears'){ bodyKids.push(h('div',{key:'ea',style:{position:'absolute',top:'-22%',left:'8%',width:S*0.2+'px',height:S*0.28+'px',background:cfg.dark,clipPath:'polygon(50% 0,0 100%,100% 100%)'}}),h('div',{key:'eb',style:{position:'absolute',top:'-22%',right:'8%',width:S*0.2+'px',height:S*0.28+'px',background:cfg.dark,clipPath:'polygon(50% 0,0 100%,100% 100%)'}})); }
+    if(cfg.feat==='horns'){ bodyKids.push(h('div',{key:'ha',style:{position:'absolute',top:'-26%',left:'14%',width:S*0.14+'px',height:S*0.32+'px',background:'#241512',clipPath:'polygon(50% 0,0 100%,100% 100%)',transform:'rotate(-16deg)'}}),h('div',{key:'hb',style:{position:'absolute',top:'-26%',right:'14%',width:S*0.14+'px',height:S*0.32+'px',background:'#241512',clipPath:'polygon(50% 0,0 100%,100% 100%)',transform:'rotate(16deg)'}})); }
+    if(cfg.feat==='tusks'){ bodyKids.push(h('div',{key:'ta',style:{position:'absolute',bottom:'12%',left:'30%',width:S*0.08+'px',height:S*0.2+'px',background:'#e8dcc0',clipPath:'polygon(50% 0,0 100%,100% 100%)',transform:'rotate(180deg)'}}),h('div',{key:'tb',style:{position:'absolute',bottom:'12%',right:'30%',width:S*0.08+'px',height:S*0.2+'px',background:'#e8dcc0',clipPath:'polygon(50% 0,0 100%,100% 100%)',transform:'rotate(180deg)'}})); }
+    if(cfg.feat==='mask'){ bodyKids.push(h('div',{key:'mk',style:{position:'absolute',top:'36%',left:'8%',right:'8%',height:S*0.14+'px',background:cfg.dark,borderRadius:'3px'}})); }
+    if(cfg.feat==='knight'){ bodyKids.push(h('div',{key:'vs',style:{position:'absolute',top:'30%',left:'50%',transform:'translateX(-50%)',width:S*0.4+'px',height:S*0.1+'px',background:'#141518',borderRadius:'2px'}})); }
+    if(cfg.feat==='mage'||cfg.feat==='hood'){ bodyKids.push(h('div',{key:'hd',style:{position:'absolute',top:'-20%',left:'50%',transform:'translateX(-50%)',width:S*0.5+'px',height:S*0.36+'px',background:cfg.dark,clipPath:'polygon(50% 0,10% 100%,90% 100%)'}})); }
+    kids.push(h('div',{key:'body',style:bodyStyle}, bodyKids));
+    const group={position:'relative',width:S+'px',height:S+'px',margin:'0 auto'};
+    if(cfg.spirit) group.animation='floatSpirit 3.4s ease-in-out infinite';
+    return h('div',{style:group}, kids);
+  }
+  _hero(scale){ return this._creature(this.state.player?this.state.player.classId:'guerreiro', scale||1); }
+
+  _dmgNum(val, color, crit, x, y, k){
+    const h=React.createElement;
+    return h('div',{key:k,style:{position:'absolute',left:x,top:y,transform:'translateX(-50%)',fontFamily:"'Cinzel',serif",fontWeight:800,fontSize:(crit?34:25)+'px',color,textShadow:'0 2px 8px #000, 0 0 14px '+color,animation:'dmgFloat 1s ease forwards',pointerEvents:'none',whiteSpace:'nowrap'}},(crit?'\u2605 ':'')+val);
+  }
+  _combatStage(c, p){
+    const h=React.createElement; const n=c.animN||0; const kind=c.lastKind; const eDmg=c.lastEnemyDmg; const pDmg=c.lastPlayerDmg; const dead=c.phase==='victory';
+    const fx=[]; const key=(s)=>s+'_'+n;
+    let enemyAnim='none'; if(dead) enemyAnim='dissolveOut .9s ease forwards'; else if(eDmg>0 && n>0) enemyAnim='enemyHurt .5s ease, enemyShake .5s ease';
+    const enemy=h('div',{key:'enemyIdle',style:{position:'absolute',top:'12%',left:'50%',transform:'translateX(-50%)',animation:'idleBob 3.4s ease-in-out infinite',zIndex:2}},
+      h('div',{key:key('et'),style:{animation:enemyAnim}}, this._creature(c.enemy.id, 1)));
+    let heroAnim='none'; if(pDmg>0 && n>0) heroAnim='heroHurt .4s ease'; else if(n>0 && (kind==='attack'||this.SPELLS[kind]||kind==='drain'||kind==='holy'||kind==='ward')) heroAnim='heroLunge .5s ease';
+    const hero=h('div',{key:'heroIdle',style:{position:'absolute',bottom:'6%',left:'12%',transform:'scale(.62)',transformOrigin:'bottom left',zIndex:2}},
+      h('div',{key:key('ht'),style:{animation:heroAnim}}, this._hero(1)));
+    const dcolMap={fire:'#ff8a4a',ice:'#8ad0ff',thunder:'#ffe27a',drain:'#c9a0ff',holy:'#ffe9a0'}; const eCol=dcolMap[kind]||'#ff6a5a';
+    if(n>0 && eDmg>0) fx.push(this._dmgNum(eDmg, eCol, c.crit, '50%', '18%', key('ed')));
+    if(n>0 && pDmg>0) fx.push(this._dmgNum(pDmg, '#ff8a4a', false, '22%', '52%', key('pd')));
+    if(n>0 && !dead){
+      if(kind==='attack'){ for(let i=0;i<3;i++) fx.push(h('div',{key:key('sl'+i),style:{position:'absolute',left:'50%',top:(20+i*6)+'%',width:'70px',height:'4px',background:'linear-gradient(90deg,transparent,#fff,transparent)',boxShadow:'0 0 10px #fff',transform:'translate(-50%,-50%) rotate(-30deg)',animation:'slashSweep .45s ease '+(i*0.06)+'s forwards',opacity:0}})); }
+      else if(kind==='fire'){ fx.push(h('div',{key:key('fb'),style:{position:'absolute',width:'26px',height:'26px',borderRadius:'50%',background:'radial-gradient(circle,#ffe08a,#ff6a2a 60%,#a3301a)',boxShadow:'0 0 26px #ff8a3a',animation:'fireballFly .55s ease forwards'}})); }
+      else if(kind==='ice'){ fx.push(h('div',{key:key('ic'),style:{position:'absolute',width:'12px',height:'34px',background:'linear-gradient(#eafcff,#5ab0e0)',boxShadow:'0 0 18px #7cd0ff',clipPath:'polygon(50% 0,100% 60%,50% 100%,0 60%)',animation:'iceFly .55s ease forwards'}})); }
+      else if(kind==='thunder'){ fx.push(h('div',{key:key('bo'),style:{position:'absolute',left:'50%',top:'0',width:'10px',height:'62%',background:'linear-gradient(#fff,#ffe27a)',boxShadow:'0 0 22px #ffe27a',clipPath:'polygon(40% 0,70% 34%,48% 40%,80% 68%,52% 72%,90% 100%,30% 56%,52% 50%,20% 24%)',transform:'translateX(-50%)',animation:'boltFlash .5s ease forwards'}})); }
+      else if(kind==='drain'){ fx.push(h('div',{key:key('db'),style:{position:'absolute',left:'18%',top:'58%',width:'46%',height:'6px',transformOrigin:'left center',transform:'rotate(-20deg)',background:'linear-gradient(90deg,#c9a0ff,#6affb0)',boxShadow:'0 0 14px #9a6aff',animation:'drainBeam .55s ease forwards',opacity:0}})); for(let i=0;i<4;i++) fx.push(h('div',{key:key('ds'+i),style:{position:'absolute',left:(12+i*3)+'%',bottom:'22%',width:'7px',height:'7px',borderRadius:'50%',background:'#c9a0ff',boxShadow:'0 0 10px #9a6aff',animation:'sparkUp .7s ease '+(i*0.07)+'s forwards',opacity:0}})); }
+      else if(kind==='holy'){ fx.push(h('div',{key:key('hp'),style:{position:'absolute',left:'50%',top:'0',width:'64px',height:'70%',transformOrigin:'top center',background:'linear-gradient(#fff7d6,rgba(255,220,120,0))',boxShadow:'0 0 30px #ffe27a',transform:'translateX(-50%)',animation:'holyPillar .6s ease forwards',opacity:0}})); }
+      else if(kind==='ward'){ fx.push(h('div',{key:key('sr'),style:{position:'absolute',left:'20%',bottom:'20%',width:'96px',height:'96px',borderRadius:'50%',border:'3px solid #ffe27a',boxShadow:'0 0 20px #ffcf3a, inset 0 0 20px #ffcf3a',transform:'translate(-50%,-50%)',animation:'shieldRing .7s ease forwards',opacity:0}})); }
+      else if(kind==='heal'){ for(let i=0;i<5;i++) fx.push(h('div',{key:key('sp'+i),style:{position:'absolute',left:(12+i*3)+'%',bottom:'20%',width:'8px',height:'8px',borderRadius:'50%',background:'#9affb0',boxShadow:'0 0 12px #6aff9a',animation:'sparkUp .8s ease '+(i*0.08)+'s forwards',opacity:0}})); }
+    }
+    let flash=null;
+    if(n>0 && (kind==='thunder'||kind==='holy')) flash=h('div',{key:key('flh'),style:{position:'absolute',inset:0,background:kind==='holy'?'#fff1c6':'#fff7d6',animation:'flashBang .45s ease forwards',pointerEvents:'none',zIndex:4}});
+    else if(n>0 && pDmg>0) flash=h('div',{key:key('flr'),style:{position:'absolute',inset:0,background:'radial-gradient(circle,transparent 40%,rgba(163,40,30,.5))',animation:'flashBang .5s ease forwards',pointerEvents:'none',zIndex:4}});
+    const shakeInner=h('div',{key:key('shake'),style:{position:'absolute',inset:0,animation:(n>0&&pDmg>0)?'screenShake .4s ease':'none'}},[
+      this._envBanner(c.locId||'covil', 236), enemy, hero, ...fx ]);
+    return h('div',{style:{position:'absolute',inset:0,overflow:'hidden'}}, [shakeInner, flash].filter(Boolean));
+  }
+  _titleArt(){
+    const h=React.createElement;
+    return h('div',{style:{position:'absolute',inset:0,overflow:'hidden'}},[
+      h('div',{key:'sky',style:{position:'absolute',inset:0,background:'radial-gradient(120% 80% at 50% 20%,#2a140c,#0c0604 70%)'}}),
+      this._silRow('lair', '#0a0503', 460),
+      h('div',{key:'drg',style:{position:'absolute',top:'8%',left:'50%',transform:'translateX(-50%) scale(1.15)',opacity:.5,animation:'idleBob 5s ease-in-out infinite'}}, this._creature('dragon',1.1)),
+      this._particles('ember', 22),
+      h('div',{key:'vg',style:{position:'absolute',inset:0,boxShadow:'inset 0 0 130px 40px rgba(0,0,0,.7)'}}),
+    ]);
+  }
+  _mapFx(){
+    const h=React.createElement;
+    return h('div',{style:{position:'absolute',inset:0,overflow:'hidden'}},[
+      this._particles('ember',10),
+      this._particles('snow',8),
+      h('div',{key:'vg',style:{position:'absolute',inset:0,boxShadow:'inset 0 0 90px 24px rgba(0,0,0,.6)',pointerEvents:'none'}}),
+    ]);
+  }
+
+  // ================= RENDER =================
+  renderVals(){
+    const s=this.state, p=s.player, screen=s.screen; const big=!!this.props.largeText;
+    const inGame=!!p && ['town','map','scene','combat','inventory','character','shop','hunt'].includes(screen);
+    const btnPrimary='font-family:\'Cinzel\',serif;font-weight:600;letter-spacing:.5px;font-size:15px;color:#1a1206;background:linear-gradient(#d9b84a,#b08a1e);border:1px solid #e6cd6b;padding:14px 16px;cursor:pointer;box-shadow:0 3px 14px rgba(201,162,39,.25);width:100%;';
+    const btnGhost='font-family:\'Spectral\',serif;font-size:15px;color:#e8dcc0;background:#221a0e;border:1px solid #4a3c24;padding:13px 16px;cursor:pointer;text-align:left;width:100%;line-height:1.35;';
+    const btnMini='font-family:\'Cinzel\',serif;font-size:12px;color:#cbb98f;background:#221a0e;border:1px solid #4a3c24;padding:8px 14px;cursor:pointer;flex:1;';
+    const navBtn='font-family:\'Cinzel\',serif;font-size:13px;color:#cbb98f;background:#221a0e;border:1px solid #4a3c24;padding:10px;cursor:pointer;flex:1;letter-spacing:.5px;';
+
+    const vm={
+      rootStyle:{position:'relative',width:'100%',maxWidth:'440px',height:'100vh',maxHeight:'100vh',display:'flex',flexDirection:'column',background:'radial-gradient(120% 80% at 50% 0%, #1c150d 0%, #120c07 55%, #0c0805 100%)',overflow:'hidden',fontSize:big?'17px':'15px',boxShadow:'0 0 60px rgba(0,0,0,.6)',paddingTop:'env(safe-area-inset-top)',paddingBottom:'env(safe-area-inset-bottom)'},
+      scrollStyle:{position:'relative',zIndex:6,flex:1,overflowY:'auto',display:'flex',flexDirection:'column'},
+      scrollRef:(el)=>{ this._scrollEl=el; },
+      btnPrimary, btnGhost, btnMini, navBtn,
+      isTitle:screen==='title', isClass:screen==='class', isTalent:screen==='talent', isTown:screen==='town', isMap:screen==='map', isScene:screen==='scene', isCombat:screen==='combat', isInv:screen==='inventory', isChar:screen==='character', isShop:screen==='shop', isHunt:screen==='hunt', isEnding:screen==='ending', isOver:screen==='gameover',
+      showHeader:inGame && screen!=='combat', showNav:screen==='map',
+      hasSave:s.hasSave, hasToast:!!s.toast, toast:s.toast,
+      muted:s.muted, onToggleMute:()=>this.toggleMute(), showFloatMute:!(inGame && screen!=='combat'),
+      muteLabel:s.muted?'SOM  ✕':'SOM  ♪', muteGlyphShort:s.muted?'✕':'♪',
+      muteFloatStyle:{position:'absolute',top:'calc(env(safe-area-inset-top) + 12px)',right:'12px',zIndex:30,background:'rgba(20,14,8,.72)',border:'1px solid #4a3c24',color:s.muted?'#8a7a58':'#e6c757',fontFamily:"'Cinzel',serif",fontSize:'10px',letterSpacing:'1px',padding:'6px 11px',cursor:'pointer',borderRadius:'2px'},
+      muteHeaderStyle:{flex:'none',width:'34px',height:'34px',display:'flex',alignItems:'center',justifyContent:'center',background:'#221a0e',border:'1px solid #4a3c24',color:s.muted?'#8a7a58':'#e6c757',fontSize:'14px',cursor:'pointer'},
+      titleFx:this._titleArt(),
+      onNew:()=>this.onNew(), onContinue:()=>this.onContinue(), onRestart:()=>this.onRestart(), onRevive:()=>this.onRevive(), onOpenInv:()=>this.onOpenInv(), onOpenChar:()=>this.onOpenChar(), onCloseOverlay:()=>this.onCloseOverlay(), onGotoTown:()=>this.onGotoTown(),
+    };
+
+    if(p){ const eff=this.effStats(p); const hpPct=Math.max(0,p.hp/eff.maxHp*100)+'%'; const mpPct=Math.max(0,p.mp/eff.maxMp*100)+'%';
+      vm.hud={ lvl:p.level, gold:p.gold, hpText:p.hp+'/'+eff.maxHp, mpText:p.mp+'/'+eff.maxMp, hpBar:{width:hpPct,height:'100%',background:'linear-gradient(#c65a4a,#8a2a22)'}, mpBar:{width:mpPct,height:'100%',background:'linear-gradient(#5a78c6,#2a3a8a)'} }; }
+
+    if(screen==='class'){ vm.classes=Object.keys(this.CLASSES).map(id=>{ const c=this.CLASSES[id]; return { name:c.name, desc:c.desc, stats:'VIT '+c.hp+'   MAN '+c.mp+'   ATK '+c.atk+'   DEF '+c.def, art:h_scale(this,c.cre), onClick:()=>this.chooseClass(id), cardStyle:{display:'block',width:'100%',textAlign:'left',background:'#1a140c',border:'1px solid #4a3c24',padding:'14px',marginBottom:'12px',cursor:'pointer'} }; }); }
+
+    if(screen==='talent' && p){ const opts=s.talentOptions||this.rollTalents(p); vm.talentSub='Nível '+p.level+' — sua lenda cresce. Escolha um aprimoramento permanente.'; vm.talents=opts.map(id=>{ const t=this.TALENTS[id]; return { name:t.name, desc:t.desc, onClick:()=>this.pickTalent(id), cardStyle:{display:'block',width:'100%',textAlign:'left',background:'#1a140c',border:'1px solid #6b5324',padding:'16px',cursor:'pointer'} }; }); }
+
+    if(screen==='map'){ const un=this.unlocked(); const comp=s.completed||{}; const STORY=['floresta','montanha','ruinas','toca','pantano','caverna','deserto','catacumba','torre','ermida','desfiladeiro','fortaleza','covil']; const done=STORY.filter(k=>comp[k]).length; const act=this.currentAct(); const roman=['','I','II','III'][act];
+      vm.map={ progress:comp.covil?'O Reino está Salvo':('Ato '+roman+' — '+this.ACTS[act]), sub:comp.covil?('Lenda completa · nível '+p.level):(done+' de '+STORY.length+' regiões conquistadas'), fx:this._mapFx(),
+        actLabels:[
+          {name:'Ato III — '+this.ACTS[3], style:{position:'absolute',left:'8px',top:'2.5%',fontSize:'9px',letterSpacing:'2px',color:'#5a4a2e',fontFamily:"'Cinzel',serif",textTransform:'uppercase',zIndex:1}},
+          {name:'Ato II — '+this.ACTS[2], style:{position:'absolute',left:'8px',top:'31%',fontSize:'9px',letterSpacing:'2px',color:'#5a4a2e',fontFamily:"'Cinzel',serif",textTransform:'uppercase',zIndex:1}},
+          {name:'Ato I — '+this.ACTS[1], style:{position:'absolute',left:'8px',top:'62%',fontSize:'9px',letterSpacing:'2px',color:'#5a4a2e',fontFamily:"'Cinzel',serif",textTransform:'uppercase',zIndex:1}},
+        ],
+        lines:this.CONNS.map(([a,b])=>{ const A=this.LOCS[a],B=this.LOCS[b]; const active=un[a]&&un[b]; return {x1:A.x,y1:A.y,x2:B.x,y2:B.y,stroke:active?'#6b5324':'#33291a'}; }),
+        nodes:this.ORDER.map(id=>{ const L=this.LOCS[id]; const locked=!un[id]; const isDone=!!comp[id]; const isHub=(L.type==='town'||L.type==='hunt'); const border=locked?'#4a3c24':(isDone?'#6b5324':(isHub?'#8a6ad0':'#c9a227')); const bg=locked?'#161009':(isDone?'#33291a':'#241a0e'); const col=locked?'#5a4a2e':(isDone?'#8a7238':(isHub?'#b49ad8':'#e6c757'));
+          return { name:L.name, glyph:locked?'\u2716':L.glyph, onClick:()=>this.openNode(id),
+            wrapStyle:{position:'absolute',left:L.x+'%',top:L.y+'%',transform:'translate(-50%,-50%)',background:'none',border:'none',padding:0,cursor:locked?'default':'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:'4px',width:'104px',zIndex:2},
+            tokenStyle:{display:'flex',alignItems:'center',justifyContent:'center',width:'46px',height:'46px',borderRadius:'50%',border:'1.5px solid '+border,background:bg,color:col,fontSize:'20px',fontFamily:"'Cinzel',serif",boxShadow:(!locked&&!isDone)?'0 0 16px rgba(201,162,39,.4)':'none'},
+            labelStyle:{fontSize:'10px',color:col,textAlign:'center',fontFamily:"'Cinzel',serif",lineHeight:1.15,textShadow:'0 1px 3px #000'} };
+        }) }; }
+
+    if(screen==='town'){ const T=this.TOWNS[s.townId]||this.TOWNS.pedrasola; vm.town={ banner:this._envBanner(T.banner,150), name:T.name, sub:T.sub, flavor:T.flavor, npcBtn:T.npcBtn, onRest:()=>this.townRest(), onShop:()=>this.openShop(), onElder:()=>this.townElder(), onMap:()=>this.townMap() }; }
+
+    if(screen==='hunt'){ const H=this.HUNTS[s.huntId]||this.HUNTS[1]; vm.hunt={ banner:this._envBanner(s.loc||'cacadaI',172), place:H.name, flavor:H.flavor, tier:'Presas de nível '+H.lvl[0]+'–'+H.lvl[1], streak:(s.huntStreak||0)>0?('Presas abatidas nesta visita: '+(s.huntStreak||0)):'Nenhuma presa ainda nesta visita.', onHunt:()=>this.huntStart(), onLeave:()=>this.setState({screen:'map', loc:null}) }; }
+
+    if(screen==='scene' && p){ const sc=this.SCENES[s.loc][s.page]; const tagColor={Honra:'#7d9a5a','Ambição':'#b06a5a',Covardia:'#8a7a4a','Traição':'#a33a2a','Ganância':'#b06a5a','Piedade':'#7d9a5a'};
+      vm.scene={ place:sc.place, text:sc.text, speaker:sc.speaker||'', hasSpeaker:!!sc.speaker, banner:this._envBanner(s.loc,172),
+        choices:sc.choices.map((ch,i)=>({ label:ch.label, hasTag:!!ch.tag, tag:ch.tag||'', onClick:()=>this.chooseSceneOption(i),
+          style:{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'10px',width:'100%',textAlign:'left',fontFamily:"'Spectral',serif",fontSize:'15px',color:'#e8dcc0',background:'#221a0e',border:'1px solid #4a3c24',padding:'14px 15px',cursor:'pointer',lineHeight:1.35},
+          tagStyle:{flex:'none',fontFamily:"'Cinzel',serif",fontSize:'10px',letterSpacing:'.5px',color:tagColor[ch.tag]||'#8a7238',border:'1px solid '+(tagColor[ch.tag]||'#4a3c24'),padding:'2px 7px',textTransform:'uppercase'} })) }; }
+
+    if(screen==='combat' && s.combat){ const c=s.combat, e=c.enemy; const eff=this.effStats(p); const ehp=Math.max(0,e.hp/e.maxHp*100)+'%'; const lines=c.log.slice(-7);
+      const subBtn={display:'flex',justifyContent:'space-between',alignItems:'center',width:'100%',fontFamily:"'Spectral',serif",fontSize:'14px',color:'#e8dcc0',background:'#221a0e',border:'1px solid #4a3c24',padding:'11px 14px',cursor:'pointer'};
+      const actBtn={fontFamily:"'Cinzel',serif",fontSize:'14px',letterSpacing:'.5px',color:'#1a1206',background:'linear-gradient(#d9b84a,#b08a1e)',border:'1px solid #e6cd6b',padding:'14px',cursor:'pointer'};
+      const actGhost={fontFamily:"'Cinzel',serif",fontSize:'14px',letterSpacing:'.5px',color:'#e8dcc0',background:'#2a2114',border:'1px solid #4a3c24',padding:'14px',cursor:'pointer'};
+      const hpPct=Math.max(0,p.hp/eff.maxHp*100)+'%'; const mpPct=Math.max(0,p.mp/eff.maxMp*100)+'%';
+      vm.combat={ enemyName:e.name, enemyHpText:e.hp+'/'+e.maxHp, enemyHpBar:{width:ehp,height:'100%',background:'linear-gradient(#c65a4a,#8a2a22)'},
+        stage:this._combatStage(c,p),
+        heroHpBar:{width:hpPct,height:'100%',background:'linear-gradient(#c65a4a,#8a2a22)'}, heroMpBar:{width:mpPct,height:'100%',background:'linear-gradient(#5a78c6,#2a3a8a)'},
+        hasWard:(c.ward||0)>0, wardText:'⛨'+(c.ward||0), wardStyle:{flex:'none',fontFamily:"'Cinzel',serif",fontSize:'11px',color:'#ffcf3a',border:'1px solid #6b5324',padding:'2px 6px'},
+        logLines:lines.map((t,i)=>({text:t,style:{color:i===lines.length-1?'#e8dcc0':'#8a7a58',fontSize:'13.5px',lineHeight:1.5,marginBottom:'3px'}})),
+        isVictory:c.phase==='victory', menuRoot:c.phase!=='victory'&&c.menu==='root', menuSub:c.phase!=='victory'&&c.menu!=='root', onContinue:()=>this.resolveAfter(), onBack:()=>this.cbMenu('root'),
+        rootActions:[{label:'Atacar',onClick:()=>this.cbAttack(),style:actBtn},{label:'Magia',onClick:()=>this.cbMenu('magic'),style:actGhost},{label:'Item',onClick:()=>this.cbMenu('item'),style:actGhost},{label:'Fugir',onClick:()=>this.cbFlee(),style:actGhost}],
+        subList: c.menu==='magic'
+          ? p.spells.map(id=>{ const sp=this.SPELLS[id]; const cost=this.spellCost(p,sp); const can=p.mp>=cost; return {label:sp.name, meta:cost+' mp', onClick:()=>this.cbSpell(id), style:{...subBtn,opacity:can?1:.45}, metaStyle:{fontFamily:"'Cinzel',serif",fontSize:'12px',color:can?'#5a78b0':'#5a4a2e'}}; })
+          : Object.keys(p.inv).filter(id=>this.ITEMS[id]&&this.ITEMS[id].kind==='consum').map(id=>({label:this.ITEMS[id].name, meta:'\u00d7'+p.inv[id], onClick:()=>this.cbItem(id), style:subBtn, metaStyle:{fontFamily:"'Cinzel',serif",fontSize:'12px',color:'#8a7238'}})),
+      };
+      if(c.menu==='item' && vm.combat.subList.length===0) vm.combat.subList=[{label:'Nenhum item utilizável', meta:'', onClick:()=>this.cbMenu('root'), style:{...subBtn,opacity:.5}, metaStyle:{}}];
+    }
+
+    if(screen==='inventory' && p){ const ids=Object.keys(p.inv).filter(id=>p.inv[id]>0 && this.ITEMS[id]);
+      vm.inv={ weapon:this.ITEMS[p.weapon].name, armor:this.ITEMS[p.armor].name, relic:p.relic?this.ITEMS[p.relic].name:'—', empty:ids.length===0, slotStyle:{flex:1,background:'#1a140c',border:'1px solid #3a2f1c',padding:'10px 11px'},
+        items:ids.map(id=>{ const it=this.ITEMS[id]; const consum=it.kind==='consum'; const action=consum?'Usar':'Equipar'; return { name:it.name, qtyLabel:'×'+p.inv[id], desc:it.desc, action, onUse:consum?(()=>this.useItemField(id)):(()=>this.equipItem(id)), btnStyle:{fontFamily:"'Cinzel',serif",fontSize:'12px',color:'#1a1206',background:'linear-gradient(#d9b84a,#b08a1e)',border:'1px solid #e6cd6b',padding:'8px 14px',cursor:'pointer',whiteSpace:'nowrap'} }; }) }; }
+
+    if(screen==='character' && p){ const eff=this.effStats(p); const xpPct=Math.min(100,p.xp/p.xpNext*100)+'%'; let al='Neutro',alc='#a8946a'; if(p.align<=-4){al='Tirano';alc='#a33a2a';}else if(p.align<0){al='Ambicioso';alc='#b06a5a';}else if(p.align>=4){al='Lendário';alc='#c9a227';}else if(p.align>0){al='Honrado';alc='#7d9a5a';} const markPct=Math.max(2,Math.min(98,50+p.align*6))+'%';
+      vm.char={ class:p.className, lvl:p.level, xpText:p.xp+'/'+p.xpNext, atk:eff.atk, def:eff.def, crit:Math.round(eff.crit*100)+'%', maxHp:eff.maxHp, maxMp:eff.maxMp, relic:p.relic?this.ITEMS[p.relic].name:'Nenhuma', art:this._hero(1.05),
+        xpBar:{width:xpPct,height:'100%',background:'linear-gradient(#d9b84a,#b08a1e)'}, statBox:{background:'#1a140c',border:'1px solid #3a2f1c',padding:'11px 12px'}, statNum:{fontFamily:"'Cinzel',serif",fontWeight:700,fontSize:'20px',color:'#e6c757',marginTop:'2px'},
+        spells:p.spells.map(id=>({name:this.SPELLS[id].name,cost:this.spellCost(p,this.SPELLS[id])})), hasTalents:(p.talents||[]).length>0, talents:(p.talents||[]).map(id=>({name:this.TALENTS[id].name})),
+        alignLabel:al, alignLabelStyle:{color:alc,fontFamily:"'Cinzel',serif"}, alignMark:{position:'absolute',top:'-3px',left:markPct,transform:'translateX(-50%)',width:'12px',height:'12px',background:alc,border:'2px solid #0c0805',borderRadius:'50%'} }; }
+
+    if(screen==='shop' && p){ const T=this.TOWNS[s.townId]||this.TOWNS.pedrasola; const stock=T.stock;
+      vm.shop={ line:'Suprimentos para quem enfrenta a escuridão. O ouro não serve aos mortos, viajante.', onClose:()=>this.onCloseOverlay(),
+        items:stock.filter(id=>this.ITEMS[id]).map(id=>{ const it=this.ITEMS[id]; const can=p.gold>=(it.price||0); return { name:it.name, desc:it.desc, priceLabel:(it.price||0)+' ouro', onBuy:()=>this.buy(id), btnStyle:{fontFamily:"'Cinzel',serif",fontSize:'12px',color:can?'#1a1206':'#5a4a2e',background:can?'linear-gradient(#d9b84a,#b08a1e)':'#221a0e',border:'1px solid '+(can?'#e6cd6b':'#3a2f1c'),padding:'9px 13px',cursor:can?'pointer':'default',whiteSpace:'nowrap'} }; }) }; }
+
+    if(screen==='ending' && p){ const e=this.ENDINGS[s.ending]||this.ENDINGS.guardiao;
+      vm.ending={ title:e.title, text:e.text, fx:this._particles(e.fx||'ember',18), stats:'Nível '+p.level+'  ·  '+(s.ending==='tirano'?'Caminho da Ambição':s.ending==='justo'?'Caminho da Honra':'Seu próprio caminho') }; }
+    if(screen==='gameover'){ vm.over={ text:s.over||this.OVERLINES[0], hint:'Você retorna à última vila com vida restaurada. Sua jornada continua.' }; }
+
+    return vm;
+  }
+}
+function h_scale(self, id){ return self._creature(id, 0.62); }
+</script>
+</body>
+</html>
